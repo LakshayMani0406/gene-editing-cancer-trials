@@ -1,0 +1,59 @@
+{
+  "feature_sets": {
+    "full": [
+      "cancer_type",
+      "is_hematologic",
+      "is_recent",
+      "log_enrollment",
+      "n_countries",
+      "n_primary_outcomes",
+      "phase_clean",
+      "results_available",
+      "sponsor_class_clean",
+      "start_year",
+      "trial_era",
+      "tumor_category"
+    ],
+    "registration": [
+      "cancer_type",
+      "is_hematologic",
+      "is_recent",
+      "n_primary_outcomes",
+      "phase_clean",
+      "sponsor_class_clean",
+      "start_year",
+      "trial_era",
+      "tumor_category"
+    ],
+    "dropped_for_reg": [
+      "log_enrollment",
+      "n_countries",
+      "results_available"
+    ]
+  },
+  "results": {
+    "Logistic Regression": {
+      "full_auc": 0.8862915266890631,
+      "reg_auc": 0.6662175718551699,
+      "delta": -0.22007395483389314
+    },
+    "Random Forest": {
+      "full_auc": 0.8963115901455767,
+      "reg_auc": 0.7184758771929824,
+      "delta": -0.17783571295259426
+    },
+    "Gradient Boosting": {
+      "full_auc": 0.8925088652482269,
+      "reg_auc": 0.7061636804777902,
+      "delta": -0.1863451847704367
+    }
+  },
+  "summary": {
+    "global_best_full_auc": 0.8996127286300858,
+    "global_best_full_model": "Soft Voting Ensemble",
+    "best_reg_auc": 0.7184758771929824,
+    "best_reg_model": "Random Forest",
+    "auc_drop": 0.18113685143710334
+  },
+  "note": "Standalone audit using sklearn-native models only (no XGBoost/LightGBM) to avoid macOS OpenMP segfault."
+}

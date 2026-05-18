@@ -1,0 +1,48 @@
+NOVEL RESEARCH FINDINGS — Gene-Editing Cancer Trials
+============================================================
+Dataset: 4,460 trials | 3,745 labeled
+
+FINDING 1 — Phase Attrition
+  Phase I→II ratio: 49.4%  |  Phase II→III: 15.0%
+  For every 100 Phase I/I-II trials, only 49 Phase II and 15 Phase III trials exist in this dataset — a 51% attrition from Phase I to II and 85% from Phase II to III.
+
+FINDING 2 — Therapy Velocity
+  Oncolytic Virus: 39.8% CAGR, projected 13 trials by 2027
+  mRNA Therapy: 35.1% CAGR, projected 7 trials by 2027
+  TIL Therapy: 26.6% CAGR, projected 20 trials by 2027
+  CAR-T: 17.4% CAGR, projected 134 trials by 2027
+
+FINDING 3 — Geographic Dominance
+  China reached 75%+ of US CAR-T trial volume in: 2021
+
+FINDING 4 — Industry Pivot Years
+  CAR-T: industry majority since 2015
+  TCR Therapy: industry majority since 2011
+  TIL Therapy: industry majority since 2021
+  NK Cell: industry majority since 2020
+  Oncolytic Virus: industry majority since 2015
+  mRNA Therapy: industry majority since 2012
+
+FINDING 5 — Enrollment Size Drift
+  Median enrollment is decreasing by 1.2 patients/year (R²=0.563, p=0.0013)
+
+FINDING 6 — Completion Rate by Era
+  1990s: 72.7% completion (11 trials)
+  2000s: 84.1% completion (145 trials)
+  2010-2014: 80.8% completion (308 trials)
+  2015-2019: 73.7% completion (1132 trials)
+  2020+: 85.0% completion (2149 trials)
+
+FINDING 7 — Target Co-occurrence Network
+  CD19 + CD22: co-appear in 37 trials
+  CD19 + CD20: co-appear in 15 trials
+  CD19 + BCMA: co-appear in 9 trials
+  PD-1 + PD-L1: co-appear in 5 trials
+  Mesothelin + PD-1: co-appear in 4 trials
+
+FINDING 8 — Cancer Type Acceleration
+  Lymphoma: +102% acceleration (2020+ vs 2015-2019)
+  Solid Tumors (Multiple): +183% acceleration (2020+ vs 2015-2019)
+  Leukemia (AML): +107% acceleration (2020+ vs 2015-2019)
+  Lung Cancer: +79% acceleration (2020+ vs 2015-2019)
+  Multiple Myeloma: +77% acceleration (2020+ vs 2015-2019)

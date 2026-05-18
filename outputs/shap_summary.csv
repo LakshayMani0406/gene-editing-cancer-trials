@@ -1,0 +1,16 @@
+feature,mean_abs_shap
+log_enrollment,0.13548627351478287
+results_available,0.037924461962514554
+sponsor_class_clean_Industry,0.03682054741703977
+start_year,0.03475684055789093
+sponsor_class_clean_Academic / Non-profit,0.013534947229066792
+n_countries,0.009550113258197879
+trial_era_2020+,0.005267074868556904
+n_primary_outcomes,0.0052629282063412965
+trial_era_2015-2019,0.004631852677965817
+phase_clean,0.004280518338919931
+cancer_type_Leukemia (AML),0.004114855752333003
+cancer_type_Lung Cancer,0.0027034865826752975
+tumor_category_Solid Tumor,0.0016067382754593811
+is_hematologic,0.001393394171172172
+tumor_category_Hematologic,0.0013258172691304664

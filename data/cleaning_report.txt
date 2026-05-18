@@ -1,0 +1,43 @@
+Cleaning Report
+Raw: 7,794
+Clean: 4,460
+
+Steps:
+  1. Dropped 923 non-interventional studies
+  2. Dropped 0 records with invalid/null status
+  3. Dropped 17 records with no start date
+  4. Dropped 1841 records with start year < 1990
+  5. Nulled 4 enrollment values > 20,000
+  6. Dropped 553 truly unclassifiable records
+
+Columns:
+  nct_id                         nulls: 0/4460
+  brief_title                    nulls: 0/4460
+  overall_status                 nulls: 0/4460
+  trial_outcome                  nulls: 715/4460
+  cancer_type                    nulls: 0/4460
+  tumor_category                 nulls: 0/4460
+  trial_era                      nulls: 0/4460
+  phase_clean                    nulls: 0/4460
+  sponsor_class_clean            nulls: 0/4460
+  enrollment_count               nulls: 4/4460
+  log_enrollment                 nulls: 0/4460
+  duration_months                nulls: 712/4460
+  start_year                     nulls: 0/4460
+  start_month                    nulls: 0/4460
+  n_countries                    nulls: 0/4460
+  includes_us                    nulls: 0/4460
+  is_multinational               nulls: 0/4460
+  results_available              nulls: 0/4460
+  n_primary_outcomes             nulls: 0/4460
+  is_hematologic                 nulls: 0/4460
+  is_recent                      nulls: 0/4460
+  conditions                     nulls: 0/4460
+  interventions                  nulls: 4460/4460
+  primary_outcome                nulls: 4/4460
+  lead_sponsor                   nulls: 0/4460
+  location_countries             nulls: 116/4460
+  start_date                     nulls: 0/4460
+  completion_date                nulls: 6/4460
+  has_results                    nulls: 0/4460
+  why_stopped                    nulls: 3773/4460

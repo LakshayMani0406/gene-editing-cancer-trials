@@ -1,0 +1,1128 @@
+{
+  "treatment_desert": {
+    "data": [
+      {
+        "cancer": "Pancreatic Cancer",
+        "annual_deaths": 50550,
+        "trials": 105,
+        "investment_ratio": 20.77,
+        "completion_rate": 80.7
+      },
+      {
+        "cancer": "Lung Cancer",
+        "annual_deaths": 130180,
+        "trials": 353,
+        "investment_ratio": 27.12,
+        "completion_rate": 77.4
+      },
+      {
+        "cancer": "Bladder Cancer",
+        "annual_deaths": 17030,
+        "trials": 50,
+        "investment_ratio": 29.36,
+        "completion_rate": 76.1
+      },
+      {
+        "cancer": "Prostate Cancer",
+        "annual_deaths": 34700,
+        "trials": 103,
+        "investment_ratio": 29.68,
+        "completion_rate": 81.5
+      },
+      {
+        "cancer": "Colorectal Cancer",
+        "annual_deaths": 52550,
+        "trials": 184,
+        "investment_ratio": 35.01,
+        "completion_rate": 83.7
+      },
+      {
+        "cancer": "Liver Cancer",
+        "annual_deaths": 26220,
+        "trials": 129,
+        "investment_ratio": 49.2,
+        "completion_rate": 88.0
+      },
+      {
+        "cancer": "Gastric Cancer",
+        "annual_deaths": 10880,
+        "trials": 60,
+        "investment_ratio": 55.15,
+        "completion_rate": 80.5
+      },
+      {
+        "cancer": "Thyroid Cancer",
+        "annual_deaths": 2230,
+        "trials": 13,
+        "investment_ratio": 58.3,
+        "completion_rate": 92.3
+      },
+      {
+        "cancer": "Breast Cancer",
+        "annual_deaths": 43700,
+        "trials": 259,
+        "investment_ratio": 59.27,
+        "completion_rate": 80.1
+      },
+      {
+        "cancer": "Ovarian Cancer",
+        "annual_deaths": 13270,
+        "trials": 105,
+        "investment_ratio": 79.13,
+        "completion_rate": 79.3
+      },
+      {
+        "cancer": "Sarcoma",
+        "annual_deaths": 6820,
+        "trials": 61,
+        "investment_ratio": 89.44,
+        "completion_rate": 88.7
+      },
+      {
+        "cancer": "Brain/CNS",
+        "annual_deaths": 18990,
+        "trials": 228,
+        "investment_ratio": 120.06,
+        "completion_rate": 85.0
+      },
+      {
+        "cancer": "Cervical Cancer",
+        "annual_deaths": 4360,
+        "trials": 57,
+        "investment_ratio": 130.73,
+        "completion_rate": 70.2
+      },
+      {
+        "cancer": "Multiple Myeloma",
+        "annual_deaths": 12640,
+        "trials": 229,
+        "investment_ratio": 181.17,
+        "completion_rate": 75.5
+      },
+      {
+        "cancer": "Melanoma",
+        "annual_deaths": 7990,
+        "trials": 194,
+        "investment_ratio": 242.8,
+        "completion_rate": 78.9
+      },
+      {
+        "cancer": "Lymphoma",
+        "annual_deaths": 21690,
+        "trials": 592,
+        "investment_ratio": 272.94,
+        "completion_rate": 81.1
+      },
+      {
+        "cancer": "Leukemia (AML)",
+        "annual_deaths": 11540,
+        "trials": 364,
+        "investment_ratio": 315.42,
+        "completion_rate": 75.3
+      },
+      {
+        "cancer": "Leukemia (ALL)",
+        "annual_deaths": 1600,
+        "trials": 262,
+        "investment_ratio": 1637.5,
+        "completion_rate": 88.4
+      }
+    ],
+    "metric_label": "Trials per 10,000 annual US deaths",
+    "most_underserved": [
+      "Pancreatic Cancer",
+      "Lung Cancer",
+      "Bladder Cancer"
+    ],
+    "best_resourced": [
+      "Leukemia (ALL)",
+      "Leukemia (AML)",
+      "Lymphoma"
+    ],
+    "key_insight": "Pancreatic Cancer has 20.77 trials per 10k deaths \u2014 79x fewer than Leukemia (ALL)"
+  },
+  "convergence": {
+    "by_year": {
+      "2012": {
+        "Hematologic": {
+          "rate": 73.9,
+          "n": 23
+        },
+        "Solid Tumor": {
+          "rate": 91.2,
+          "n": 34
+        }
+      },
+      "2013": {
+        "Hematologic": {
+          "rate": 80.6,
+          "n": 36
+        },
+        "Solid Tumor": {
+          "rate": 87.8,
+          "n": 49
+        }
+      },
+      "2014": {
+        "Hematologic": {
+          "rate": 84.4,
+          "n": 32
+        },
+        "Solid Tumor": {
+          "rate": 70.9,
+          "n": 55
+        }
+      },
+      "2015": {
+        "Hematologic": {
+          "rate": 84.6,
+          "n": 39
+        },
+        "Solid Tumor": {
+          "rate": 75.3,
+          "n": 93
+        }
+      },
+      "2016": {
+        "Hematologic": {
+          "rate": 65.9,
+          "n": 44
+        },
+        "Solid Tumor": {
+          "rate": 86.5,
+          "n": 111
+        }
+      },
+      "2017": {
+        "Hematologic": {
+          "rate": 71.7,
+          "n": 92
+        },
+        "Solid Tumor": {
+          "rate": 73.8,
+          "n": 195
+        }
+      },
+      "2018": {
+        "Hematologic": {
+          "rate": 70.3,
+          "n": 91
+        },
+        "Solid Tumor": {
+          "rate": 70.2,
+          "n": 168
+        }
+      },
+      "2019": {
+        "Hematologic": {
+          "rate": 67.7,
+          "n": 93
+        },
+        "Solid Tumor": {
+          "rate": 73.3,
+          "n": 206
+        }
+      },
+      "2020": {
+        "Hematologic": {
+          "rate": 75.0,
+          "n": 80
+        },
+        "Solid Tumor": {
+          "rate": 76.1,
+          "n": 197
+        }
+      },
+      "2021": {
+        "Hematologic": {
+          "rate": 75.0,
+          "n": 116
+        },
+        "Solid Tumor": {
+          "rate": 71.4,
+          "n": 182
+        }
+      },
+      "2022": {
+        "Hematologic": {
+          "rate": 77.4,
+          "n": 115
+        },
+        "Solid Tumor": {
+          "rate": 79.1,
+          "n": 201
+        }
+      },
+      "2023": {
+        "Hematologic": {
+          "rate": 87.2,
+          "n": 148
+        },
+        "Solid Tumor": {
+          "rate": 87.0,
+          "n": 239
+        }
+      },
+      "2024": {
+        "Hematologic": {
+          "rate": 90.0,
+          "n": 160
+        },
+        "Solid Tumor": {
+          "rate": 91.4,
+          "n": 243
+        }
+      }
+    },
+    "gap_by_year": {
+      "2012": -17.3,
+      "2013": -7.2,
+      "2014": 13.5,
+      "2015": 9.3,
+      "2016": -20.6,
+      "2017": -2.1,
+      "2018": 0.1,
+      "2019": -5.6,
+      "2020": -1.1,
+      "2021": 3.6,
+      "2022": -1.7,
+      "2023": 0.2,
+      "2024": -1.4
+    },
+    "trend_slope": 0.495,
+    "trend_r2": 0.043,
+    "trend_p": 0.4952,
+    "trend_direction": "WIDENING",
+    "significant": false,
+    "key_insight": "The blood vs solid tumor completion gap is widening at 0.49pp/year (R\u00b2=0.043, p=0.495)"
+  },
+  "tipping_point": {
+    "bin_stats": [
+      {
+        "bin_label": "1\u201310",
+        "lo": 1,
+        "hi": 10,
+        "midpoint": 5,
+        "n": 471,
+        "completion_rate": 49.9
+      },
+      {
+        "bin_label": "10\u201320",
+        "lo": 10,
+        "hi": 20,
+        "midpoint": 15,
+        "n": 646,
+        "completion_rate": 82.2
+      },
+      {
+        "bin_label": "20\u201330",
+        "lo": 20,
+        "hi": 30,
+        "midpoint": 25,
+        "n": 576,
+        "completion_rate": 88.0
+      },
+      {
+        "bin_label": "30\u201350",
+        "lo": 30,
+        "hi": 50,
+        "midpoint": 40,
+        "n": 690,
+        "completion_rate": 92.0
+      },
+      {
+        "bin_label": "50\u201375",
+        "lo": 50,
+        "hi": 75,
+        "midpoint": 62,
+        "n": 424,
+        "completion_rate": 93.6
+      },
+      {
+        "bin_label": "75\u2013100",
+        "lo": 75,
+        "hi": 100,
+        "midpoint": 87,
+        "n": 197,
+        "completion_rate": 92.4
+      },
+      {
+        "bin_label": "100\u2013150",
+        "lo": 100,
+        "hi": 150,
+        "midpoint": 125,
+        "n": 197,
+        "completion_rate": 92.4
+      },
+      {
+        "bin_label": "150\u2013200",
+        "lo": 150,
+        "hi": 200,
+        "midpoint": 175,
+        "n": 100,
+        "completion_rate": 97.0
+      },
+      {
+        "bin_label": "200\u2013300",
+        "lo": 200,
+        "hi": 300,
+        "midpoint": 250,
+        "n": 90,
+        "completion_rate": 90.0
+      },
+      {
+        "bin_label": "300\u2013500",
+        "lo": 300,
+        "hi": 500,
+        "midpoint": 400,
+        "n": 94,
+        "completion_rate": 92.6
+      },
+      {
+        "bin_label": "500\u2013750",
+        "lo": 500,
+        "hi": 750,
+        "midpoint": 625,
+        "n": 43,
+        "completion_rate": 97.7
+      },
+      {
+        "bin_label": "750\u20131000",
+        "lo": 750,
+        "hi": 1000,
+        "midpoint": 875,
+        "n": 20,
+        "completion_rate": 95.0
+      },
+      {
+        "bin_label": "1000\u20132000",
+        "lo": 1000,
+        "hi": 2000,
+        "midpoint": 1500,
+        "n": 29,
+        "completion_rate": 100.0
+      }
+    ],
+    "tipping_point_enrollment": 10,
+    "jump_magnitude_pp": 32.3,
+    "below_rate": 49.9,
+    "above_rate": 89.8,
+    "chi2": 495.56,
+    "p_value": 0.0,
+    "significant": true,
+    "key_insight": "Trials enrolling \u226510 patients complete at 89.8% vs 49.9% for smaller trials \u2014 a 39.9pp jump (p=0.0000)"
+  },
+  "dual_target": {
+    "by_year": [
+      {
+        "year": 2013,
+        "total": 89,
+        "dual": 0,
+        "multi": 0,
+        "dual_pct": 0.0,
+        "multi_pct": 0.0
+      },
+      {
+        "year": 2014,
+        "total": 90,
+        "dual": 1,
+        "multi": 0,
+        "dual_pct": 1.1,
+        "multi_pct": 0.0
+      },
+      {
+        "year": 2015,
+        "total": 139,
+        "dual": 0,
+        "multi": 0,
+        "dual_pct": 0.0,
+        "multi_pct": 0.0
+      },
+      {
+        "year": 2016,
+        "total": 176,
+        "dual": 0,
+        "multi": 0,
+        "dual_pct": 0.0,
+        "multi_pct": 0.0
+      },
+      {
+        "year": 2017,
+        "total": 365,
+        "dual": 12,
+        "multi": 4,
+        "dual_pct": 3.3,
+        "multi_pct": 1.1
+      },
+      {
+        "year": 2018,
+        "total": 348,
+        "dual": 12,
+        "multi": 1,
+        "dual_pct": 3.4,
+        "multi_pct": 0.3
+      },
+      {
+        "year": 2019,
+        "total": 410,
+        "dual": 12,
+        "multi": 0,
+        "dual_pct": 2.9,
+        "multi_pct": 0.0
+      },
+      {
+        "year": 2020,
+        "total": 375,
+        "dual": 11,
+        "multi": 0,
+        "dual_pct": 2.9,
+        "multi_pct": 0.0
+      },
+      {
+        "year": 2021,
+        "total": 426,
+        "dual": 7,
+        "multi": 0,
+        "dual_pct": 1.6,
+        "multi_pct": 0.0
+      },
+      {
+        "year": 2022,
+        "total": 418,
+        "dual": 9,
+        "multi": 1,
+        "dual_pct": 2.2,
+        "multi_pct": 0.2
+      },
+      {
+        "year": 2023,
+        "total": 447,
+        "dual": 6,
+        "multi": 0,
+        "dual_pct": 1.3,
+        "multi_pct": 0.0
+      },
+      {
+        "year": 2024,
+        "total": 416,
+        "dual": 16,
+        "multi": 2,
+        "dual_pct": 3.8,
+        "multi_pct": 0.5
+      }
+    ],
+    "trend_slope": 0.228,
+    "trend_r2": 0.342,
+    "trend_p": 0.046,
+    "early_pct": 0.0,
+    "late_pct": 3.8,
+    "key_insight": "Multi-target trials grew from 0.0% in 2013 to 3.8% in 2024 (+3.8pp), proving the field is shifting toward combination immunotherapy"
+  },
+  "country_spec": {
+    "by_country": {
+      "United States": {
+        "total_trials": 2201,
+        "therapy_pcts": {
+          "CAR-T": 11.5,
+          "NK Cell": 4.8,
+          "TCR Therapy": 2.6,
+          "TIL Therapy": 1.8,
+          "Gene Therapy": 0.8,
+          "Oncolytic Virus": 0.7,
+          "mRNA Therapy": 0.5,
+          "CRISPR": 0.3
+        },
+        "top_therapy": "CAR-T",
+        "top_pct": 11.5
+      },
+      "China": {
+        "total_trials": 1294,
+        "therapy_pcts": {
+          "CAR-T": 30.1,
+          "NK Cell": 10.2,
+          "TCR Therapy": 3.7,
+          "TIL Therapy": 3.3,
+          "Oncolytic Virus": 2.6,
+          "mRNA Therapy": 1.8,
+          "CRISPR": 0.3
+        },
+        "top_therapy": "CAR-T",
+        "top_pct": 30.1
+      },
+      "United Kingdom": {
+        "total_trials": 193,
+        "therapy_pcts": {
+          "CAR-T": 6.2,
+          "TIL Therapy": 3.1,
+          "TCR Therapy": 0.5
+        },
+        "top_therapy": "CAR-T",
+        "top_pct": 6.2
+      },
+      "Germany": {
+        "total_trials": 193,
+        "therapy_pcts": {
+          "CAR-T": 4.1,
+          "TIL Therapy": 2.1,
+          "TCR Therapy": 1.0,
+          "mRNA Therapy": 0.5
+        },
+        "top_therapy": "CAR-T",
+        "top_pct": 4.1
+      },
+      "France": {
+        "total_trials": 268,
+        "therapy_pcts": {
+          "CAR-T": 4.1,
+          "TIL Therapy": 1.9,
+          "Oncolytic Virus": 1.1,
+          "NK Cell": 0.7,
+          "Gene Therapy": 0.4,
+          "mRNA Therapy": 0.4
+        },
+        "top_therapy": "CAR-T",
+        "top_pct": 4.1
+      },
+      "Japan": {
+        "total_trials": 76,
+        "therapy_pcts": {
+          "CAR-T": 3.9,
+          "NK Cell": 2.6,
+          "TCR Therapy": 1.3
+        },
+        "top_therapy": "CAR-T",
+        "top_pct": 3.9
+      },
+      "South Korea": {
+        "total_trials": 133,
+        "therapy_pcts": {
+          "NK Cell": 12.0,
+          "CAR-T": 3.8,
+          "mRNA Therapy": 1.5,
+          "Gene Therapy": 0.8,
+          "Oncolytic Virus": 0.8
+        },
+        "top_therapy": "NK Cell",
+        "top_pct": 12.0
+      },
+      "Australia": {
+        "total_trials": 176,
+        "therapy_pcts": {
+          "CAR-T": 6.2,
+          "NK Cell": 2.3,
+          "mRNA Therapy": 1.7,
+          "CRISPR": 0.6,
+          "TIL Therapy": 0.6,
+          "Gene Therapy": 0.6,
+          "Oncolytic Virus": 0.6
+        },
+        "top_therapy": "CAR-T",
+        "top_pct": 6.2
+      },
+      "Canada": {
+        "total_trials": 247,
+        "therapy_pcts": {
+          "CAR-T": 4.0,
+          "TIL Therapy": 1.2,
+          "NK Cell": 1.2,
+          "Oncolytic Virus": 0.8
+        },
+        "top_therapy": "CAR-T",
+        "top_pct": 4.0
+      },
+      "Italy": {
+        "total_trials": 197,
+        "therapy_pcts": {
+          "CAR-T": 4.1,
+          "NK Cell": 1.5,
+          "TIL Therapy": 1.0,
+          "mRNA Therapy": 1.0
+        },
+        "top_therapy": "CAR-T",
+        "top_pct": 4.1
+      }
+    },
+    "key_insight": "The US, China, and European countries show distinct therapy-type specializations: United States leads in CAR-T, China leads in CAR-T, United Kingdom leads in CAR-T"
+  },
+  "phase_cascade": {
+    "p1": 2344,
+    "p2": 1157,
+    "p3": 173,
+    "p1_to_p2_rate": 49.4,
+    "p2_to_p3_rate": 15.0
+  },
+  "therapy_velocity": {
+    "Oncolytic Virus": {
+      "total": 62,
+      "yr_counts": {
+        "2015": 1,
+        "2016": 1,
+        "2017": 5,
+        "2018": 3,
+        "2019": 5,
+        "2020": 2,
+        "2021": 9,
+        "2022": 10,
+        "2023": 16,
+        "2024": 3
+      },
+      "slope": 0.99,
+      "cagr": 39.8,
+      "projected_2027": 2003,
+      "verdict": "growing"
+    },
+    "mRNA Therapy": {
+      "total": 44,
+      "yr_counts": {
+        "2016": 1,
+        "2017": 2,
+        "2018": 2,
+        "2019": 4,
+        "2021": 3,
+        "2022": 1,
+        "2023": 9,
+        "2024": 5
+      },
+      "slope": 0.57,
+      "cagr": 35.1,
+      "projected_2027": 1149,
+      "verdict": "growing"
+    },
+    "TIL Therapy": {
+      "total": 105,
+      "yr_counts": {
+        "2015": 4,
+        "2016": 1,
+        "2017": 5,
+        "2018": 4,
+        "2019": 9,
+        "2020": 5,
+        "2021": 15,
+        "2022": 11,
+        "2023": 13,
+        "2024": 16
+      },
+      "slope": 1.52,
+      "cagr": 26.6,
+      "projected_2027": 3084,
+      "verdict": "growing"
+    },
+    "CAR-T": {
+      "total": 717,
+      "yr_counts": {
+        "2015": 4,
+        "2016": 7,
+        "2017": 55,
+        "2018": 44,
+        "2019": 73,
+        "2020": 62,
+        "2021": 83,
+        "2022": 85,
+        "2023": 98,
+        "2024": 86
+      },
+      "slope": 9.88,
+      "cagr": 17.4,
+      "projected_2027": 20038,
+      "verdict": "accelerating"
+    },
+    "NK Cell": {
+      "total": 283,
+      "yr_counts": {
+        "2015": 6,
+        "2016": 35,
+        "2017": 24,
+        "2018": 14,
+        "2019": 21,
+        "2020": 18,
+        "2021": 16,
+        "2022": 33,
+        "2023": 19,
+        "2024": 36
+      },
+      "slope": 1.25,
+      "cagr": 6.3,
+      "projected_2027": 2532,
+      "verdict": "growing"
+    },
+    "Gene Therapy": {
+      "total": 19,
+      "yr_counts": {
+        "2015": 2,
+        "2016": 1,
+        "2017": 4,
+        "2018": 2,
+        "2020": 2,
+        "2021": 2,
+        "2024": 1
+      },
+      "slope": -0.1,
+      "cagr": 0.0,
+      "projected_2027": 0,
+      "verdict": "plateauing"
+    },
+    "TCR Therapy": {
+      "total": 104,
+      "yr_counts": {
+        "2015": 2,
+        "2016": 2,
+        "2017": 8,
+        "2018": 14,
+        "2019": 12,
+        "2020": 4,
+        "2021": 9,
+        "2022": 10,
+        "2023": 12,
+        "2024": 13
+      },
+      "slope": 0.95,
+      "cagr": -3.0,
+      "projected_2027": 1917,
+      "verdict": "growing"
+    }
+  },
+  "cooccurrence": {
+    "top_pairs": [
+      {
+        "a": "CD19",
+        "b": "CD22",
+        "count": 37
+      },
+      {
+        "a": "CD19",
+        "b": "CD20",
+        "count": 15
+      },
+      {
+        "a": "CD19",
+        "b": "BCMA",
+        "count": 9
+      },
+      {
+        "a": "PD-1",
+        "b": "PD-L1",
+        "count": 5
+      },
+      {
+        "a": "Mesothelin",
+        "b": "PD-1",
+        "count": 4
+      },
+      {
+        "a": "HER2",
+        "b": "EGFR",
+        "count": 4
+      },
+      {
+        "a": "Mesothelin",
+        "b": "GPC3",
+        "count": 3
+      },
+      {
+        "a": "PD-1",
+        "b": "MUC1",
+        "count": 3
+      },
+      {
+        "a": "PD-1",
+        "b": "CTLA-4",
+        "count": 3
+      },
+      {
+        "a": "CD22",
+        "b": "CD20",
+        "count": 3
+      },
+      {
+        "a": "Mesothelin",
+        "b": "MUC1",
+        "count": 2
+      },
+      {
+        "a": "CD22",
+        "b": "BCMA",
+        "count": 2
+      }
+    ],
+    "node_strength": {
+      "CD19": 63,
+      "CD22": 43,
+      "PD-1": 21,
+      "CD20": 19,
+      "Mesothelin": 13,
+      "BCMA": 12,
+      "EGFR": 11,
+      "MUC1": 10,
+      "HER2": 9,
+      "PD-L1": 9,
+      "GPC3": 7,
+      "PSMA": 7,
+      "CTLA-4": 6,
+      "CD38": 2,
+      "CD30": 2,
+      "KRAS": 2,
+      "VEGF": 2,
+      "CD33": 2,
+      "GD2": 2,
+      "TP53": 1
+    }
+  },
+  "era_completion": {
+    "1990s": {
+      "n": 11,
+      "rate": 72.7
+    },
+    "2000s": {
+      "n": 145,
+      "rate": 84.1
+    },
+    "2010-2014": {
+      "n": 308,
+      "rate": 80.8
+    },
+    "2015-2019": {
+      "n": 1132,
+      "rate": 73.7
+    },
+    "2020+": {
+      "n": 2149,
+      "rate": 85.0
+    }
+  },
+  "geography": {
+    "country_counts": {
+      "United States": 2201,
+      "China": 1294,
+      "France": 268,
+      "Spain": 251,
+      "Canada": 247,
+      "Italy": 197,
+      "Germany": 193,
+      "United Kingdom": 193,
+      "Australia": 176,
+      "Netherlands": 155,
+      "South Korea": 133,
+      "Belgium": 129,
+      "Denmark": 85,
+      "Israel": 78,
+      "Taiwan": 77,
+      "Japan": 76,
+      "Switzerland": 66,
+      "Poland": 64,
+      "Sweden": 63,
+      "Singapore": 55
+    },
+    "top_countries": {
+      "United States": 2201,
+      "China": 1294,
+      "France": 268,
+      "Spain": 251,
+      "Canada": 247,
+      "Italy": 197,
+      "Germany": 193,
+      "United Kingdom": 193,
+      "Australia": 176,
+      "Netherlands": 155
+    }
+  },
+  "funnel": {
+    "phase_funnel": {
+      "Early Phase I": 297,
+      "Phase I": 1528,
+      "Phase I/II": 816,
+      "Phase II": 1157,
+      "Phase III": 173,
+      "Phase IV": 21
+    },
+    "phase_success": {
+      "Early Phase I": 86.8,
+      "Phase I": 78.3,
+      "Phase I/II": 79.0,
+      "Phase II": 81.9,
+      "Phase III": 89.0,
+      "Phase IV": 92.3
+    }
+  },
+  "phase_attrition": {
+    "phase_counts": {
+      "Early Phase I": 297,
+      "Phase I": 1528,
+      "Phase I/II": 816,
+      "Phase II": 1157,
+      "Phase III": 173,
+      "Phase IV": 21
+    },
+    "phase_completion_rates": {
+      "Early Phase I": 86.8,
+      "Phase I": 78.3,
+      "Phase I/II": 79.0,
+      "Phase II": 81.9,
+      "Phase III": 89.0,
+      "Phase IV": 92.3
+    },
+    "i_to_ii_pct": 75.7,
+    "ii_to_iii_pct": 15.0,
+    "i_to_iii_pct": 11.3,
+    "total_phase_i": 1528,
+    "key_insight": "Only 11.3% of Phase I trials ever reach Phase III \u2014 89% are lost in the pipeline",
+    "plain_english": "For every 100 early-stage cancer trials started, only 11 make it all the way to large-scale testing. The rest are abandoned \u2014 too dangerous, too expensive, or simply didn't work well enough."
+  },
+  "sponsor_gap": {
+    "by_sponsor": {
+      "Industry": {
+        "n": 1041,
+        "total": 1210,
+        "completion_rate": 72.3,
+        "median_enrollment": 35
+      },
+      "Academic / Non-profit": {
+        "n": 2307,
+        "total": 2823,
+        "completion_rate": 84.9,
+        "median_enrollment": 26
+      },
+      "Unknown": {
+        "n": 31,
+        "total": 58,
+        "completion_rate": 93.5,
+        "median_enrollment": 38
+      },
+      "Government (NIH)": {
+        "n": 298,
+        "total": 298,
+        "completion_rate": 79.5,
+        "median_enrollment": 35
+      },
+      "Research Network": {
+        "n": 64,
+        "total": 67,
+        "completion_rate": 90.6,
+        "median_enrollment": 88
+      }
+    },
+    "chi2": 0.0,
+    "p_value": 1.0,
+    "significant": false,
+    "best_sponsor": "Unknown",
+    "worst_sponsor": "Industry",
+    "gap_pp": 21.2,
+    "key_insight": "Unknown sponsors outperform Industry by 21.2pp in trial completion",
+    "plain_english": "Trials funded by Unknown complete 21.2% more often than those funded by Industry. However, this gap is not statistically significant \u2014 the difference may be due to chance."
+  },
+  "cart_maturation": {
+    "by_era": {},
+    "phase_iii_2015_2019": 4.7,
+    "phase_iii_2020_plus": 3.3,
+    "delta_pp": -1.4,
+    "direction": "REGRESSING",
+    "key_insight": "Phase III trial share decreased by 1.4pp from 2015-2019 to 2020+ \u2014 the field is regressing",
+    "plain_english": "In 2015-2019, 4.7% of trials were large-scale Phase III studies. By 2020+, that number fell to 3.3%. More early-phase trials are being started than late-phase ones finishing \u2014 the field is still in the exploratory stage."
+  },
+  "therapy_survival": {
+    "rankings": {
+      "Hematologic": {
+        "n_total": 1653,
+        "n_labeled": 1356,
+        "completion_rate": 80.6,
+        "median_enrollment": 29
+      },
+      "Solid Tumor": {
+        "n_total": 2807,
+        "n_labeled": 2389,
+        "completion_rate": 81.5,
+        "median_enrollment": 30
+      }
+    },
+    "chi2": 0.0,
+    "p_value": 1.0,
+    "significant": false,
+    "best_therapy": "Hematologic",
+    "worst_therapy": "Solid Tumor",
+    "key_insight": "Hematologic leads all therapy types in trial completion rate",
+    "plain_english": "Not all cancer therapies are equal. Hematologic trials finish at the highest rate (80.6%), while Solid Tumor trials are most likely to be abandoned (81.5%). This ranking reveals which therapeutic approaches the scientific community has the most confidence in."
+  },
+  "projection_2030": {
+    "historical": {
+      "2013": 89,
+      "2014": 90,
+      "2015": 139,
+      "2016": 176,
+      "2017": 365,
+      "2018": 348,
+      "2019": 410,
+      "2020": 375,
+      "2021": 426,
+      "2022": 418,
+      "2023": 447,
+      "2024": 416
+    },
+    "projections": {
+      "2025": 538,
+      "2026": 573,
+      "2027": 609,
+      "2028": 644,
+      "2029": 679,
+      "2030": 715
+    },
+    "slope": 35.3,
+    "r2": 0.818,
+    "p_value": 0.0001,
+    "base_2024": 416,
+    "proj_2030": 715,
+    "growth_pct_2024_to_2030": 71.9,
+    "top_growing_cancers": {
+      "Lymphoma": {
+        "slope": 4.73,
+        "proj_2030": 95,
+        "base_2024": 58
+      },
+      "Solid Tumors (Multiple)": {
+        "slope": 3.95,
+        "proj_2030": 64,
+        "base_2024": 32
+      },
+      "Leukemia (AML)": {
+        "slope": 3.04,
+        "proj_2030": 60,
+        "base_2024": 43
+      },
+      "Lung Cancer": {
+        "slope": 2.52,
+        "proj_2030": 56,
+        "base_2024": 35
+      },
+      "Multiple Myeloma": {
+        "slope": 2.15,
+        "proj_2030": 40,
+        "base_2024": 23
+      },
+      "Other Cancer": {
+        "slope": 1.72,
+        "proj_2030": 45,
+        "base_2024": 22
+      },
+      "Leukemia (ALL)": {
+        "slope": 1.71,
+        "proj_2030": 39,
+        "base_2024": 28
+      },
+      "Brain/CNS": {
+        "slope": 1.7,
+        "proj_2030": 36,
+        "base_2024": 24
+      },
+      "Breast Cancer": {
+        "slope": 1.08,
+        "proj_2030": 32,
+        "base_2024": 19
+      },
+      "Melanoma": {
+        "slope": -0.18,
+        "proj_2030": 11,
+        "base_2024": 10
+      }
+    },
+    "key_insight": "At current growth (+35.3/year), gene-editing trial volume will reach 715/year by 2030 \u2014 a 71.9% increase from 2024",
+    "plain_english": "Based on trends from 2013\u20132024, scientists will be running about 715 new gene-editing cancer trials per year by 2030. That's 71.9% more than today. The fastest-growing cancer areas are Lymphoma, Solid Tumors (Multiple), Leukemia (AML) \u2014 meaning these will dominate the research landscape this decade."
+  }
+}

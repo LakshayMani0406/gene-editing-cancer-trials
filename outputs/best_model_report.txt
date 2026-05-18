@@ -1,0 +1,52 @@
+Best Model (FULL feature set): Soft Voting Ensemble
+======================================================================
+
+NOTE: This is the headline number reported in dashboards.
+The full feature set includes conduct-time features
+(log_enrollment, results_available). See section 10 of
+ml_models.py for the registration-time-only comparison.
+
+  ACC: 0.8705
+  PREC: 0.9338
+  REC: 0.9046
+  F1: 0.9190
+  AUC: 0.8996
+
+Classification Report:
+                      precision    recall  f1-score   support
+
+Terminated/Withdrawn       0.64      0.72      0.68       141
+    Completed/Active       0.93      0.90      0.92       608
+
+            accuracy                           0.87       749
+           macro avg       0.79      0.81      0.80       749
+        weighted avg       0.88      0.87      0.87       749
+
+
+All Models (FULL feature set):
+  Logistic Regression            acc=0.7891  auc=0.8863
+  SVM (RBF)                      acc=0.8158  auc=0.8949
+  K-Nearest Neighbors            acc=0.8652  auc=0.8381
+  Random Forest                  acc=0.8825  auc=0.8933
+  Gradient Boosting              acc=0.8865  auc=0.8925
+  Extra Trees                    acc=0.8705  auc=0.8658
+  XGBoost                        acc=0.8291  auc=0.8987
+  LightGBM                       acc=0.8331  auc=0.8950
+  Random Forest (Tuned)          acc=0.8959  auc=0.8970
+  XGBoost (Tuned)                acc=0.8945  auc=0.8941
+  Soft Voting Ensemble           acc=0.8705  auc=0.8996
+
+
+======================================================================
+REGISTRATION-TIME LEAKAGE AUDIT
+======================================================================
+Dropped conduct-time features: ['log_enrollment', 'n_countries', 'results_available']
+
+  Model                    Full AUC    Reg AUC     Δ AUC
+  Logistic Regression     0.8863     0.6662     -0.2201
+  Random Forest           0.8963     0.7185     -0.1778
+  Gradient Boosting       0.8925     0.7062     -0.1863
+
+Global best (full):  0.8996  (Soft Voting Ensemble)
+Best reg-only:       0.7185  (Random Forest)
+AUC drop:            +0.1811
