@@ -1,0 +1,12 @@
+# Extra dependencies for the archived exploratory scripts in legacy/ only.
+# Not required for the canonical pipeline (src/run.py) or the SQL layer.
+-r requirements.txt
+matplotlib
+seaborn
+scipy
+statsmodels
+requests
+xgboost
+lightgbm
+shap
+torch
