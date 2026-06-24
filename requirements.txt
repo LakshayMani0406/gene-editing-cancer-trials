@@ -1,4 +1,4 @@
-# Core pipeline — everything needed to reproduce artifacts/results.json and the SQL layer.
+# Core pipeline: everything needed to reproduce artifacts/results.json and the SQL layer.
 # Pinned to the versions this was built and verified against (Python 3.11).
 numpy==2.2.3
 pandas==2.3.3

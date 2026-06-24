@@ -1,5 +1,5 @@
 """
-pipeline.py — canonical modeling logic for the trial-completion leakage study.
+pipeline.py: canonical modeling logic for the trial-completion leakage study.
 
 One model family (Random Forest) is held fixed across the three-number arc so the
 only thing that changes between steps is (1) which features are allowed, (2) how the
@@ -40,7 +40,7 @@ NUM_REG  = ["start_year", "n_primary_outcomes", "is_hematologic", "is_recent"]
 CAT_OHE  = ["cancer_type", "tumor_category", "sponsor_class_clean", "trial_era"]
 CAT_ORD  = ["phase_clean"]
 
-# time-encoding features (calendar recency) — used to isolate how much signal is "just time"
+# time-encoding features (calendar recency), used to isolate how much signal is "just time"
 TIME_NUM = ["start_year", "is_recent"]
 TIME_CAT = ["trial_era"]
 NUM_REG_NOTIME = ["n_primary_outcomes", "is_hematologic"]
@@ -116,7 +116,7 @@ def _clean_name(n):
 
 
 def fit_eval(d, y, num, ohe, ordc, model, split="random", cut=None,
-             want_roc=False, want_imp=False, roc_points=100):
+             want_roc=False, want_imp=False, want_pred=False, roc_points=100):
     """Fit `model` on (num+ohe+ordc) features and return a metrics dict.
     split='random' = stratified 80/20; split='temporal' = train start_year<cut, test>=cut."""
     feat = [c for c in num + ohe + ordc if c in d.columns]
@@ -154,6 +154,9 @@ def fit_eval(d, y, num, ohe, ordc, model, split="random", cut=None,
         order = np.argsort(imp)[::-1][:12]
         out["importance"] = [{"feature": _clean_name(str(names[i])),
                               "importance": round(float(imp[i]), 4)} for i in order]
+    if want_pred:
+        out["pred"] = {"y_true": [int(v) for v in yte],
+                       "y_prob": [round(float(p), 4) for p in prob]}
     return out
 
 

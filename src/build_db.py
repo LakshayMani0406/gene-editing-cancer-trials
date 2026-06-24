@@ -1,5 +1,5 @@
 """
-build_db.py — load the clean dataset into SQLite and run the committed analyst queries.
+build_db.py: load the clean dataset into SQLite and run the committed analyst queries.
 
     python src/build_db.py
 
@@ -31,7 +31,7 @@ def run_all():
     for f in sorted(SQL_DIR.glob("*.sql")):
         question = f.read_text().splitlines()[0].lstrip("- ").strip()
         print("=" * 78)
-        print(f"  {f.name}  —  {question}")
+        print(f"  {f.name}: {question}")
         print("=" * 78)
         try:
             print(pd.read_sql_query(f.read_text(), con).to_string(index=False))

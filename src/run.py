@@ -1,5 +1,5 @@
 """
-run.py — single reproducible entry point for the trial-completion leakage study.
+run.py: single reproducible entry point for the trial-completion leakage study.
 
     python src/run.py
 
@@ -53,27 +53,27 @@ def build():
 
     # ── Three-number arc (RF fixed) ──────────────────────────────────────────
     leaked = P.fit_eval(df_b, y_b, P.NUM_FULL, P.CAT_OHE, P.CAT_ORD, P.rf(),
-                        split="random", want_roc=True, want_imp=True)
+                        split="random", want_roc=True, want_imp=True, want_pred=True)
     naive  = P.fit_eval(df_b, y_b, P.NUM_REG,  P.CAT_OHE, P.CAT_ORD, P.rf(),
-                        split="random", want_roc=True, want_imp=True)
+                        split="random", want_roc=True, want_imp=True, want_pred=True)
     honest = P.fit_eval(df_s, y_s, P.NUM_REG,  P.CAT_OHE, P.CAT_ORD, P.rf(),
-                        split="temporal", cut=cut_s, want_roc=True, want_imp=True)
+                        split="temporal", cut=cut_s, want_roc=True, want_imp=True, want_pred=True)
 
     arc = [
         {"step": 1, "key": "leaked", "label": "Full model (leaked)",
          "auc": leaked["auc"], "model": "Random Forest", "target": "bundled", "split": "random",
-         "still_cheating": "Uses results_available, log_enrollment and n_countries — features only "
-                           "known after the trial runs. A terminated trial mechanically has low "
+         "still_cheating": "Uses results_available, log_enrollment and n_countries, features that are "
+                           "only known after the trial runs. A terminated trial mechanically has low "
                            "enrollment and no posted results, so the model reads the outcome off its own inputs.",
          "n_test": leaked["n_test"], "test_base_rate": leaked["test_base_rate"],
-         "roc": leaked["roc"], "importance": leaked["importance"]},
+         "roc": leaked["roc"], "importance": leaked["importance"], "pred": leaked["pred"]},
         {"step": 2, "key": "naive_clean", "label": "Registration-only (looks honest)",
          "auc": naive["auc"], "model": "Random Forest", "target": "bundled", "split": "random",
          "still_cheating": "Drops the obvious leaks but keeps the bundled success label, which counts "
                            "not-yet-failed recent trials as wins. Calendar recency now leaks the label: "
                            "time features alone score {:.3f}.".format(time_only_b),
          "n_test": naive["n_test"], "test_base_rate": naive["test_base_rate"],
-         "roc": naive["roc"], "importance": naive["importance"]},
+         "roc": naive["roc"], "importance": naive["importance"], "pred": naive["pred"]},
         {"step": 3, "key": "strict_temporal", "label": "Strict label + temporal split (honest)",
          "auc": honest["auc"], "model": "Random Forest", "target": "strict", "split": "temporal",
          "cut_year": honest["cut_year"],
@@ -81,7 +81,7 @@ def build():
                            "the past to predict the future. Near the 0.50 coin-flip: trial completion "
                            "is barely predictable from registration metadata, and that is the finding.",
          "n_test": honest["n_test"], "test_base_rate": honest["test_base_rate"],
-         "roc": honest["roc"], "importance": honest["importance"]},
+         "roc": honest["roc"], "importance": honest["importance"], "pred": honest["pred"]},
     ]
 
     # ── Conduct-time leakage audit (LR / RF / GB, full vs reg, bundled, random) ──
@@ -177,7 +177,7 @@ def main():
     OUT.parent.mkdir(exist_ok=True)
     with open(OUT, "w") as f:
         json.dump(results, f, indent=2)
-    print(f"\n  {'VERIFIED' if ok else 'WARNING: numbers drifted from legacy'} — "
+    print(f"\n  {'VERIFIED' if ok else 'WARNING: numbers drifted from legacy'}: "
           f"wrote {OUT.relative_to(ROOT)}")
     if not ok:
         raise SystemExit("Numbers drifted beyond tolerance; not trusting this export.")

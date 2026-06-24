@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peeling back leakage in a clinical-trial success model</title>
+<meta name="description" content="A trial-completion model that scored AUC 0.90 falls to near coin-flip once three layers of data leakage are removed. Interactive explainer.">
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#ffffff; --ink:#13202b; --muted:#5b6b78; --line:#e3e8ee;
+    --card:#f7f9fb; --accent:#0e7c7b; --accent2:#2563eb; --warn:#c2410c; --good:#15803d;
+    --maxw:1000px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+  header{padding:56px 0 28px;border-bottom:1px solid var(--line)}
+  .kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:34px;line-height:1.2;margin:.4em 0 .3em;letter-spacing:-.01em}
+  h2{font-size:22px;margin:2.2em 0 .6em;letter-spacing:-.01em}
+  h3{font-size:15px;margin:0 0 .4em;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  p{margin:.7em 0;color:var(--ink)}
+  .lede{font-size:19px;color:var(--ink)}
+  .muted{color:var(--muted)}
+  a{color:var(--accent2);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* arc numbers */
+  .arc{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 6px}
+  .arc .num{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .arc .num .v{font-size:30px;font-weight:700;letter-spacing:-.02em}
+  .arc .num .l{font-size:13px;color:var(--muted);margin-top:2px}
+  .arc .num.s1 .v{color:var(--warn)} .arc .num.s2 .v{color:#b45309} .arc .num.s3 .v{color:var(--good)}
+  .arrow{align-self:center;color:var(--muted);font-size:22px}
+
+  /* interactive panel */
+  .panel{border:1px solid var(--line);border-radius:14px;margin:18px 0 8px;overflow:hidden}
+  .steps{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--card)}
+  .steps button{flex:1;min-width:180px;border:0;background:transparent;padding:14px 16px;cursor:pointer;
+    text-align:left;border-right:1px solid var(--line);font:inherit;color:var(--muted)}
+  .steps button:last-child{border-right:0}
+  .steps button .sn{font-size:12px;letter-spacing:.05em;text-transform:uppercase;font-weight:700}
+  .steps button .st{display:block;color:var(--ink);font-weight:600;font-size:15px;margin-top:2px}
+  .steps button[aria-selected="true"]{background:#fff;box-shadow:inset 0 -3px 0 var(--accent)}
+  .steps button[aria-selected="true"] .sn{color:var(--accent)}
+
+  .body{display:grid;grid-template-columns:1.15fr .85fr;gap:0}
+  .body>div{padding:22px}
+  .body .left{border-right:1px solid var(--line)}
+  @media(max-width:760px){ .body{grid-template-columns:1fr} .body .left{border-right:0;border-bottom:1px solid var(--line)} h1{font-size:27px} }
+
+  .aucbig{font-size:46px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .aucbig small{font-size:15px;font-weight:600;color:var(--muted);letter-spacing:0}
+  .cheat{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;border-radius:10px;padding:12px 14px;font-size:14.5px;margin-top:14px}
+  .cheat.clean{background:#f0fdf4;border-color:#bbf7d0;color:#14532d}
+  .chartbox{position:relative;height:300px;margin-top:6px}
+  .impbox{position:relative;height:300px}
+  .callout{font-size:14px;color:var(--muted);margin-top:10px}
+  .callout b{color:var(--ink)}
+
+  /* threshold tool */
+  .tool{border-top:1px solid var(--line);padding:22px;background:var(--card)}
+  .tool .row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .tool .ctrl{flex:1;min-width:260px}
+  input[type=range]{width:100%}
+  .presets{display:flex;gap:8px;margin:8px 0 0;flex-wrap:wrap}
+  .presets button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--muted)}
+  .presets button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
+  .cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;min-width:260px;flex:1;font-size:13px}
+  .cm .c{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}
+  .cm .h{background:transparent;border:0;color:var(--muted);align-self:center;text-align:center;font-weight:600}
+  .cm .c .n{font-size:20px;font-weight:700}
+  .cm .fp{color:var(--warn)} .cm .fn{color:#b45309}
+  .verdict{margin-top:14px;font-size:14.5px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:12px 14px}
+
+  /* stats band */
+  .band{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+  @media(max-width:680px){ .band{grid-template-columns:1fr} }
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .stat .big{font-size:30px;font-weight:800;letter-spacing:-.02em}
+  .stat .big.a{color:var(--accent)} .stat .big.w{color:var(--warn)}
+
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0 60px;color:var(--muted);font-size:14px}
+  code{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:13px}
+  .err{display:none;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:8px;padding:12px;margin:14px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Clinical-trial analytics · ClinicalTrials.gov</div>
+    <h1>A trial-success model that looked 90% right. Then I removed the cheating.</h1>
+    <p class="lede">I trained a model to predict whether a registered oncology gene-editing trial would complete.
+      The first version scored AUC <b>0.90</b>. I did not trust it, so I took it apart. Each step below removes
+      one way the model was reading the answer off its own inputs. Watch the curve fall toward the diagonal.</p>
+    <div class="arc" id="arc"></div>
+    <p class="muted" id="punchline" style="margin-top:14px"></p>
+  </header>
+
+  <div class="err" id="err"></div>
+
+  <h2>Peel back the leakage</h2>
+  <p class="muted">Same model (random forest) at every step. The only things that change are which features are allowed,
+    how "success" is defined, and whether the test set comes from the future. Pick a step.</p>
+
+  <div class="panel">
+    <div class="steps" id="steps" role="tablist"></div>
+    <div class="body">
+      <div class="left">
+        <h3>ROC curve</h3>
+        <div class="aucbig"><span id="aucval"></span> <small>AUC</small></div>
+        <div class="chartbox"><canvas id="roc"></canvas></div>
+        <div class="cheat" id="cheat"></div>
+      </div>
+      <div class="right">
+        <h3>What the model leans on</h3>
+        <div class="impbox"><canvas id="imp"></canvas></div>
+        <div class="callout" id="leaknote"></div>
+      </div>
+    </div>
+    <div class="tool">
+      <h3>So what would you do with it?</h3>
+      <p class="muted" style="margin-top:0">A model only matters if it changes a decision. Say you used this to triage
+        which trials to back. Move the threshold and weigh the two mistakes: backing a trial that will not complete
+        (false positive) against passing on one that would (false negative).</p>
+      <div class="row">
+        <div class="ctrl">
+          <label>Decision threshold: <b id="thval">0.50</b></label>
+          <input type="range" id="thr" min="0" max="1" step="0.01" value="0.5">
+          <div class="presets" id="presets">
+            <button data-fp="1" data-fn="1" aria-pressed="true">Equal cost</button>
+            <button data-fp="3" data-fn="1">Backing a dud costs 3&times;</button>
+            <button data-fp="1" data-fn="3">Missing a winner costs 3&times;</button>
+          </div>
+          <div class="verdict" id="verdict"></div>
+        </div>
+        <div class="cm" id="cm">
+          <div class="h"></div><div class="h">Predicted complete</div><div class="h">Predicted fail</div>
+          <div class="h">Actually completes</div><div class="c"><div class="n" id="tp">0</div>true pos</div><div class="c fn"><div class="n" id="fn">0</div>false neg</div>
+          <div class="h">Actually fails</div><div class="c fp"><div class="n" id="fp">0</div>false pos</div><div class="c"><div class="n" id="tn">0</div>true neg</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>The two facts that broke the "clean" number</h2>
+  <div class="band">
+    <div class="stat">
+      <div class="big w" id="s_inprog"></div>
+      <p style="margin:.2em 0 0">of all trials labelled a "success" had <b>never actually completed</b>. They were
+      still recruiting or active, counted as wins only because they had not failed yet. Those trials are recent,
+      so the model could guess the label from the calendar.</p>
+    </div>
+    <div class="stat">
+      <div class="big a"><span id="s_timeonly"></span> AUC</div>
+      <p style="margin:.2em 0 0">comes from the trial's <b>start year alone</b>. That is <b id="s_share"></b> of the
+      "registration-only" model's signal above chance. The honest-looking 0.72 was mostly a recency detector.</p>
+    </div>
+  </div>
+
+  <h2>Why I report all three numbers</h2>
+  <p>The <b style="color:var(--warn)">0.90</b> is what the data hands you if you are not careful: it includes how many
+    patients enrolled and whether results were posted, both of which are only known after a trial runs. A terminated
+    trial mechanically has low enrollment and no posted results, so the model was reading the outcome off its own inputs.</p>
+  <p>The <b style="color:#b45309">0.72</b> is what you get after that obvious fix. It still fooled me. The success label
+    counted recent, still-running trials as wins, so the model scored points just for noticing a trial was new.</p>
+  <p>The <b style="color:var(--good)">~0.60</b> is the number I can stand behind: real completions versus real
+    terminations, trained on the past to predict the future. It sits just above a coin flip. <b>Honest prediction of
+    trial completion from registration data is close to impossible, and that is the result.</b> I would rather show
+    that and explain it than ship the 0.90 and be wrong in production.</p>
+
+  <footer>
+    <p>Data: ClinicalTrials.gov interventional oncology gene-editing trials. Model and every number on this page are
+      recomputed by <code>python src/run.py</code> and exported to <code>artifacts/results.json</code>; this page reads
+      that file. Reproduce locally with <code>make repro</code>. Random forest, fixed seed 42, no conduct-time features
+      in the honest model, temporal train/test split.</p>
+    <p>Built by Lakshay Mani. <span id="gen" class="muted"></span></p>
+  </footer>
+</div>
+
+<script id="results-data" type="application/json">{"schema_version":"1.0","generated_by":"src/run.py","generated_at":"2026-06-23T23:30:35Z","title":"Predicting oncology gene-editing trial completion: a three-layer leakage audit","headline":{"arc_auc":[0.8963,0.7185,0.6047],"punchline":"Honest prospective prediction of trial completion is near chance (AUC ~0.60). The apparent skill was leakage at three layers."},"arc":[{"step":1,"key":"leaked","label":"Full model (leaked)","auc":0.8963,"model":"Random Forest","target":"bundled","split":"random","still_cheating":"Uses results_available, log_enrollment and n_countries, features that are only known after the trial runs. A terminated trial mechanically has low enrollment and no posted results, so the model reads the outcome off its own inputs.","n_test":749,"test_base_rate":0.812,"roc":{"fpr":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0071,0.0142,0.0142,0.0213,0.0284,0.0284,0.0355,0.0426,0.0426,0.0426,0.0496,0.0567,0.0567,0.0638,0.0709,0.0709,0.078,0.0851,0.0922,0.0922,0.0993,0.1064,0.1064,0.1135,0.1206,0.1206,0.1348,0.1418,0.1631,0.1631,0.1702,0.1773,0.1773,0.1844,0.1986,0.1986,0.2057,0.2128,0.2199,0.2199,0.227,0.2411,0.2411,0.2482,0.2553,0.2624,0.2624,0.2695,0.2766,0.2766,0.2837,0.2908,0.2908,0.2979,0.305,0.3121,0.3121,0.3333,0.3404,0.3404,0.3546,0.3617,0.3617,0.3688,0.383,0.3901,0.3901,0.4043,0.4184,0.4184,0.4326,0.4539,0.4539,0.461,0.4681,0.4894,0.4894,0.4965,0.5319,0.5319,0.539,0.5532,0.5532,0.5957,0.6028,0.6312,0.6312,0.6809,0.7092,0.7092,0.7305,0.7801,1.0],"tpr":[0.0,0.0016,0.0378,0.1135,0.1168,0.1382,0.2089,0.2089,0.2681,0.3174,0.3849,0.3849,0.4309,0.4424,0.4424,0.4836,0.4901,0.4901,0.5,0.5099,0.5214,0.5214,0.5477,0.5592,0.5592,0.6102,0.6645,0.6645,0.6711,0.6776,0.6891,0.6891,0.7401,0.7467,0.7467,0.7516,0.7549,0.7549,0.7829,0.8059,0.8092,0.8092,0.8224,0.8289,0.8289,0.8388,0.847,0.847,0.8503,0.8618,0.8668,0.8668,0.8849,0.8882,0.8882,0.8914,0.8931,0.9046,0.9046,0.9112,0.9128,0.9128,0.9211,0.9227,0.9227,0.9276,0.9309,0.9359,0.9359,0.949,0.9523,0.9523,0.9556,0.9605,0.9605,0.9622,0.9655,0.9704,0.9704,0.9737,0.977,0.977,0.9786,0.9803,0.9803,0.9819,0.9836,0.9852,0.9852,0.9868,0.9885,0.9885,0.9901,0.9918,0.9918,0.9934,0.9951,0.9967,0.9967,1.0]},"importance":[{"feature":"log_enrollment","importance":0.6297},{"feature":"start_year","importance":0.0801},{"feature":"n_countries","importance":0.0663},{"feature":"results_available","importance":0.0474},{"feature":"sponsor_class_clean_Industry","importance":0.0389},{"feature":"n_primary_outcomes","importance":0.0225},{"feature":"phase_clean","importance":0.022},{"feature":"sponsor_class_clean_Academic / Non-profit","importance":0.0166},{"feature":"trial_era_2020+","importance":0.0087},{"feature":"trial_era_2015-2019","importance":0.0078},{"feature":"cancer_type_Leukemia (AML)","importance":0.0066},{"feature":"cancer_type_Lung Cancer","importance":0.0053}],"pred":{"y_true":[1,1,1,1,1,0,0,1,1,0,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,0,1,0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,0,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,0,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,0,0,1,1,0,1,1,1,1,1,1,0,1,1,0,1,0,0,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,0,0,1,0,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,0,0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,1,0,0,1,1,0,1,1,0,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0],"y_prob":[0.76,0.8896,0.8388,0.9916,0.9875,0.3667,0.6768,0.9848,0.8891,0.8038,0.7471,0.8378,0.9256,0.6186,0.952,0.8133,0.9678,0.9589,0.9469,0.7774,0.9725,0.8853,0.8039,0.9856,0.7824,0.3327,0.9529,0.9693,0.7494,0.6736,0.6575,0.8172,0.95,0.7946,0.9837,0.8746,0.0784,0.4202,0.4598,0.9015,0.9612,0.2035,0.9574,0.9884,0.9905,0.9636,0.9801,0.8974,0.9146,0.8469,0.8127,0.968,0.8006,0.7036,0.9573,0.9391,0.9833,0.9745,0.191,0.9376,0.9075,0.9503,0.9678,0.8856,0.7021,0.85,0.7402,0.9887,0.6532,0.8613,0.4338,0.0363,0.4245,0.9711,0.9135,0.9867,0.7908,0.7608,0.9371,0.582,0.9822,0.953,0.8392,0.2443,0.0733,0.6407,0.8223,0.7237,0.9871,0.8057,0.9274,0.8678,0.9908,0.9184,0.7588,0.6398,0.9661,0.9576,0.9806,0.8313,0.4403,0.0674,0.7788,0.8466,0.8357,0.9371,0.9311,0.8407,0.9456,0.9422,0.8145,0.961,0.8961,0.0967,0.9783,0.8644,0.9104,0.9071,0.9613,0.9761,0.9858,0.9758,0.133,0.9747,0.9836,0.9888,0.9751,0.9826,0.2286,0.9899,0.9827,0.781,0.9754,0.6878,0.7942,0.9864,0.5223,0.6748,0.9736,0.9832,0.9886,0.9683,0.9636,0.9748,0.7247,0.0774,0.976,0.9553,0.3711,0.9042,0.912,0.1174,0.8941,0.7817,0.7228,0.9339,0.8052,0.3282,0.9846,0.512,0.9601,0.98,0.9844,0.9898,0.2702,0.5732,0.9608,0.9415,0.9058,0.737,0.906,0.9638,0.4769,0.9684,0.8218,0.8916,0.8953,0.0166,0.8155,0.9654,0.9176,0.9574,0.8969,0.6346,0.9682,0.6606,0.9615,0.9433,0.9436,0.9742,0.7957,0.0466,0.973,0.9738,0.8101,0.9908,0.9804,0.2111,0.3177,0.9505,0.9189,0.8953,0.9666,0.9647,0.9813,0.9825,0.5938,0.7364,0.9254,0.7916,0.8646,0.9706,0.7762,0.3641,0.9754,0.9661,0.7257,0.9373,0.8764,0.9102,0.9166,0.8879,0.8915,0.6453,0.9753,0.9653,0.824,0.9864,0.9369,0.8743,0.673,0.8615,0.9685,0.6804,0.971,0.984,0.9131,0.8858,0.9479,0.9476,0.5013,0.9789,0.965,0.9741,0.9586,0.9741,0.9896,0.934,0.8952,0.7251,0.8818,0.9823,0.8225,0.9825,0.978,0.9754,0.8459,0.8253,0.9337,0.4319,0.9299,0.0496,0.9829,0.9056,0.946,0.6573,0.1438,0.9854,0.9758,0.9716,0.9735,0.9153,0.8053,0.9317,0.946,0.9675,0.9649,0.9479,0.6431,0.9665,0.9683,0.7697,0.8609,0.9574,0.4254,0.951,0.7318,0.4238,0.96,0.9465,0.9846,0.9625,0.376,0.9306,0.3959,0.8937,0.0458,0.973,0.2202,0.9842,0.3483,0.5312,0.6103,0.8406,0.7453,0.6471,0.9394,0.891,0.754,0.7382,0.9274,0.7141,0.2234,0.8735,0.7737,0.7924,0.9885,0.9676,0.9833,0.5267,0.9751,0.5555,0.9671,0.8503,0.3049,0.7025,0.1933,0.6382,0.9663,0.7852,0.855,0.9009,0.1281,0.6967,0.9473,0.9662,0.9332,0.9632,0.9425,0.981,0.9692,0.1919,0.7218,0.9603,0.1146,0.785,0.9826,0.9897,0.8549,0.8603,0.8881,0.9599,0.9477,0.8115,0.9768,0.9726,0.9558,0.0784,0.9824,0.9543,0.9051,0.2628,0.8628,0.9752,0.8999,0.5488,0.9646,0.9577,0.9906,0.9436,0.8691,0.9646,0.9865,0.7607,0.7902,0.8512,0.8026,0.9751,0.9812,0.767,0.9094,0.9254,0.9486,0.9777,0.9879,0.7378,0.8376,0.9612,0.4931,0.0062,0.6957,0.7836,0.8911,0.7543,0.972,0.9746,0.0191,0.9177,0.843,0.0687,0.9791,0.0618,0.0478,0.924,0.4204,0.5155,0.9822,0.8773,0.4952,0.9695,0.2981,0.9072,0.987,0.9871,0.5915,0.9394,0.961,0.9881,0.9718,0.4959,0.8037,0.9627,0.9598,0.9773,0.8,0.9406,0.8761,0.9311,0.9891,0.7518,0.9822,0.9881,0.7876,0.7101,0.8691,0.99,0.8901,0.8744,0.9054,0.8031,0.9341,0.9815,0.8793,0.9751,0.8714,0.9737,0.6662,0.7756,0.9756,0.9638,0.9896,0.9669,0.8994,0.9648,0.8428,0.8352,0.958,0.4216,0.982,0.0846,0.9137,0.9776,0.8032,0.638,0.8655,0.9866,0.8258,0.9058,0.8959,0.7166,0.494,0.8322,0.7809,0.9846,0.9825,0.4093,0.9906,0.83,0.9764,0.7844,0.9201,0.9887,0.9811,0.9695,0.9423,0.8987,0.8737,0.2359,0.8107,0.9897,0.9791,0.9797,0.9829,0.1222,0.7868,0.5612,0.8108,0.9382,0.8238,0.9692,0.0908,0.8762,0.964,0.9465,0.9218,0.2039,0.2927,0.9346,0.2398,0.9142,0.837,0.4213,0.9687,0.8501,0.988,0.7653,0.8126,0.0921,0.946,0.8285,0.9718,0.9223,0.971,0.9716,0.8643,0.9765,0.9513,0.9719,0.962,0.9827,0.0834,0.9685,0.7662,0.9547,0.8292,0.9436,0.9905,0.0513,0.8023,0.9575,0.8848,0.9735,0.6874,0.884,0.8261,0.9652,0.9578,0.9039,0.6545,0.9813,0.9218,0.8648,0.985,0.8189,0.9757,0.6364,0.6988,0.5022,0.9784,0.6546,0.8427,0.9805,0.4908,0.9859,0.9355,0.8703,0.6902,0.7164,0.433,0.8276,0.941,0.0553,0.9157,0.0562,0.9735,0.9606,0.7536,0.981,0.9739,0.9797,0.2767,0.9877,0.9594,0.9375,0.0599,0.9899,0.8693,0.8766,0.9255,0.9825,0.9818,0.085,0.9772,0.1328,0.9418,0.7982,0.8369,0.9912,0.9796,0.9396,0.8156,0.9808,0.0419,0.9734,0.9014,0.9773,0.9333,0.7516,0.9605,0.6471,0.6144,0.8458,0.963,0.832,0.8295,0.9489,0.0943,0.031,0.9141,0.9232,0.7894,0.6473,0.903,0.3117,0.8346,0.9203,0.99,0.9771,0.973,0.9711,0.7975,0.4473,0.9658,0.1689,0.9802,0.7863,0.7582,0.929,0.9556,0.9698,0.9711,0.9032,0.739,0.9552,0.7412,0.9303,0.8764,0.9259,0.9782,0.2586,0.9882,0.9463,0.9732,0.8216,0.9498,0.9556,0.9803,0.9911,0.1084,0.9347,0.9227,0.7865,0.9878,0.981,0.8999,0.201,0.5132,0.971,0.9338,0.6985,0.0071,0.9802,0.9396,0.7814,0.9868,0.9873,0.4158,0.3813,0.8898,0.7818,0.316,0.9116,0.966,0.8293,0.5205,0.8279,0.4245,0.9291,0.7722,0.9789,0.9322,0.977,0.9648,0.9823,0.9812,0.1477,0.9181,0.986,0.7864,0.9289,0.8626,0.7458,0.8403,0.9124,0.9414,0.9232,0.9482,0.9804,0.9423,0.5077,0.3887,0.6089,0.9906,0.7508,0.9301,0.9789,0.9759,0.5,0.9492,0.9868,0.9806,0.9771,0.8379,0.9815,0.9863,0.9902,0.9536,0.9832,0.9391,0.7942,0.4376,0.9894,0.9759,0.0977,0.7056,0.8992,0.985,0.7721,0.8944,0.7761,0.6099,0.9822,0.8366,0.9564,0.6615,0.9879,0.9792,0.9215,0.217]}},{"step":2,"key":"naive_clean","label":"Registration-only (looks honest)","auc":0.7185,"model":"Random Forest","target":"bundled","split":"random","still_cheating":"Drops the obvious leaks but keeps the bundled success label, which counts not-yet-failed recent trials as wins. Calendar recency now leaks the label: time features alone score 0.678.","n_test":749,"test_base_rate":0.812,"roc":{"fpr":[0.0,0.0,0.0,0.0,0.0,0.0071,0.0071,0.0142,0.0142,0.0142,0.0142,0.0142,0.0213,0.0284,0.0284,0.0355,0.0426,0.0426,0.0426,0.0638,0.0709,0.078,0.0851,0.0922,0.1064,0.1135,0.1206,0.1277,0.1348,0.1489,0.1702,0.1773,0.1844,0.1844,0.1915,0.1986,0.2057,0.2199,0.227,0.234,0.2482,0.2624,0.2624,0.2766,0.2908,0.2979,0.3262,0.3333,0.3404,0.3617,0.3617,0.3759,0.3759,0.383,0.4043,0.4113,0.4113,0.4184,0.4255,0.4326,0.4397,0.4468,0.461,0.4681,0.4965,0.5035,0.5106,0.5177,0.5319,0.5532,0.5745,0.5816,0.5887,0.6028,0.617,0.6241,0.6454,0.6596,0.6738,0.6809,0.695,0.695,0.7021,0.7163,0.7305,0.7518,0.7943,0.8014,0.8085,0.8369,0.844,0.8652,0.8723,0.8794,0.9007,0.9362,0.9504,0.9787,0.9858,1.0],"tpr":[0.0,0.0082,0.0164,0.0312,0.0576,0.0641,0.0987,0.1069,0.1645,0.176,0.1891,0.2122,0.2204,0.2385,0.2862,0.2911,0.3191,0.3339,0.347,0.3487,0.3832,0.3964,0.3997,0.4128,0.4211,0.4326,0.4408,0.4655,0.472,0.4852,0.4885,0.4934,0.5033,0.5148,0.523,0.5263,0.5362,0.5378,0.5543,0.5559,0.5592,0.5625,0.5822,0.5888,0.597,0.6086,0.6118,0.6234,0.6266,0.6283,0.6431,0.648,0.6595,0.6678,0.6727,0.6776,0.6875,0.6941,0.699,0.7039,0.7122,0.7237,0.7303,0.7418,0.7467,0.7599,0.7648,0.778,0.7812,0.7878,0.7911,0.7944,0.7993,0.8141,0.8207,0.8322,0.8339,0.8503,0.852,0.8635,0.8717,0.8865,0.8882,0.9161,0.9211,0.926,0.9309,0.9359,0.9441,0.9441,0.949,0.9556,0.9622,0.9671,0.972,0.9737,0.9803,0.9836,0.9967,1.0]},"importance":[{"feature":"start_year","importance":0.3163},{"feature":"sponsor_class_clean_Industry","importance":0.1166},{"feature":"phase_clean","importance":0.1069},{"feature":"n_primary_outcomes","importance":0.0823},{"feature":"sponsor_class_clean_Academic / Non-profit","importance":0.0456},{"feature":"cancer_type_Leukemia (AML)","importance":0.033},{"feature":"trial_era_2020+","importance":0.0273},{"feature":"trial_era_2015-2019","importance":0.0206},{"feature":"cancer_type_Multiple Myeloma","importance":0.019},{"feature":"cancer_type_Renal/Kidney","importance":0.0177},{"feature":"cancer_type_Lung Cancer","importance":0.0172},{"feature":"cancer_type_Lymphoma","importance":0.0151}],"pred":{"y_true":[1,1,1,1,1,0,0,1,1,0,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,0,1,0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,0,1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,0,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,0,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,0,0,1,1,0,1,1,1,1,1,1,0,1,1,0,1,0,0,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,0,0,1,0,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,0,0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,1,0,0,1,1,0,1,1,0,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0],"y_prob":[0.7439,0.8503,0.8172,0.9483,0.9449,0.6449,0.6699,0.9769,0.9326,0.5592,0.6637,0.8339,0.7566,0.6002,0.8197,0.5962,0.8787,0.9128,0.7726,0.5418,0.9594,0.9237,0.8054,0.9135,0.5871,0.8042,0.7928,0.936,0.5662,0.6549,0.5479,0.8051,0.842,0.8348,0.9402,0.7328,0.7974,0.5155,0.874,0.799,0.8155,0.8024,0.8361,0.9594,0.9565,0.8829,0.9376,0.8338,0.7274,0.8577,0.741,0.8132,0.7222,0.6043,0.9388,0.7929,0.9574,0.9181,0.6818,0.7995,0.9013,0.8864,0.8192,0.8131,0.7982,0.6991,0.8085,0.9594,0.7397,0.6265,0.6788,0.6413,0.6154,0.9338,0.801,0.9483,0.6637,0.6559,0.8886,0.8289,0.9395,0.8818,0.7458,0.6952,0.8105,0.8013,0.8183,0.6432,0.9562,0.6854,0.8003,0.6382,0.9431,0.9003,0.6668,0.5534,0.8311,0.904,0.9591,0.7778,0.5115,0.8056,0.7549,0.6449,0.8115,0.8106,0.827,0.8042,0.7652,0.807,0.8428,0.8363,0.835,0.9073,0.9159,0.7103,0.7869,0.7478,0.8225,0.9664,0.9566,0.8762,0.5924,0.901,0.9295,0.9382,0.9327,0.8694,0.799,0.9352,0.9667,0.6653,0.9129,0.7529,0.7588,0.9448,0.5812,0.6192,0.9565,0.9382,0.9529,0.8618,0.8311,0.9443,0.5961,0.8496,0.9256,0.8865,0.4663,0.8492,0.8842,0.5862,0.963,0.6147,0.6843,0.8056,0.7358,0.811,0.9675,0.827,0.8028,0.9267,0.9147,0.9678,0.8402,0.8323,0.9402,0.7874,0.8166,0.9677,0.8329,0.9568,0.7573,0.8633,0.7588,0.7394,0.9386,0.8868,0.6615,0.9188,0.8111,0.8879,0.798,0.5817,0.9635,0.6503,0.7957,0.8846,0.8212,0.9541,0.6934,0.9513,0.9248,0.914,0.5764,0.9594,0.9003,0.7388,0.6156,0.9285,0.8348,0.7176,0.8989,0.8901,0.9552,0.9758,0.6295,0.6402,0.8907,0.7477,0.7921,0.8419,0.6163,0.5115,0.8994,0.8933,0.7463,0.7883,0.8918,0.7347,0.7411,0.6251,0.8147,0.6593,0.9675,0.9054,0.8163,0.9528,0.8178,0.7837,0.8135,0.6391,0.9292,0.6345,0.9729,0.8194,0.8131,0.8462,0.7494,0.7786,0.8932,0.9409,0.9083,0.9404,0.8122,0.8501,0.9649,0.8105,0.8385,0.8121,0.787,0.9205,0.5373,0.936,0.9387,0.9564,0.7733,0.7615,0.8171,0.7974,0.8164,0.7817,0.963,0.8686,0.8049,0.5666,0.8188,0.9543,0.8947,0.9506,0.9266,0.7532,0.6539,0.7995,0.8431,0.866,0.9321,0.8299,0.8386,0.8687,0.9326,0.7747,0.7577,0.9056,0.7577,0.8489,0.8019,0.558,0.8171,0.8496,0.9418,0.7937,0.8378,0.7909,0.7409,0.7973,0.8169,0.9457,0.7092,0.9617,0.6155,0.8039,0.7578,0.8089,0.7767,0.6377,0.8534,0.8001,0.7806,0.6213,0.8584,0.9503,0.7177,0.6272,0.6975,0.7585,0.9753,0.8055,0.9215,0.7552,0.9531,0.5872,0.8283,0.6103,0.7384,0.8001,0.8732,0.5225,0.9639,0.6625,0.7362,0.8373,0.8189,0.6305,0.7955,0.8042,0.794,0.8633,0.7957,0.95,0.9188,0.8985,0.5298,0.9596,0.9388,0.7313,0.963,0.8861,0.6103,0.7862,0.6952,0.8345,0.8846,0.781,0.946,0.9656,0.9572,0.8282,0.9439,0.8989,0.8009,0.707,0.7416,0.8865,0.8342,0.7727,0.9551,0.8248,0.9611,0.8957,0.7784,0.798,0.9474,0.7919,0.8052,0.8136,0.7939,0.9184,0.919,0.6502,0.7968,0.8587,0.902,0.8704,0.9393,0.6253,0.6476,0.82,0.843,0.9286,0.7833,0.6893,0.8348,0.7733,0.8742,0.952,0.6956,0.9251,0.6841,0.8335,0.9303,0.8381,0.8049,0.716,0.8979,0.8443,0.9147,0.8316,0.8588,0.9412,0.7826,0.8284,0.9618,0.9452,0.736,0.9664,0.9046,0.9335,0.9356,0.5939,0.6335,0.9054,0.8065,0.9376,0.7104,0.8951,0.811,0.8609,0.9382,0.6298,0.8719,0.9544,0.5193,0.6555,0.7788,0.948,0.8566,0.7905,0.7532,0.6377,0.8289,0.9439,0.6827,0.9266,0.6159,0.8948,0.7822,0.8048,0.9315,0.8873,0.9678,0.8976,0.8838,0.8829,0.7815,0.7724,0.9017,0.6307,0.9375,0.8013,0.8372,0.9432,0.6482,0.6324,0.7815,0.9355,0.6535,0.792,0.7833,0.8298,0.8003,0.5996,0.5662,0.9772,0.9386,0.8378,0.958,0.8021,0.9175,0.6073,0.723,0.9594,0.9326,0.9406,0.8029,0.7027,0.6542,0.7901,0.7652,0.9466,0.8892,0.9127,0.963,0.6389,0.6999,0.756,0.6916,0.8074,0.7179,0.8633,0.7595,0.7401,0.8498,0.843,0.7884,0.7677,0.8048,0.7937,0.8742,0.6835,0.9058,0.5905,0.8589,0.6397,0.9588,0.6317,0.8102,0.6424,0.7527,0.6381,0.9473,0.8023,0.9123,0.834,0.8201,0.9237,0.8146,0.9338,0.802,0.9192,0.7802,0.8146,0.7534,0.8012,0.6617,0.7915,0.9649,0.6364,0.6943,0.7982,0.7239,0.9188,0.6049,0.7122,0.8057,0.9017,0.8834,0.8125,0.7648,0.9021,0.7935,0.6062,0.9373,0.754,0.9406,0.8005,0.7733,0.6549,0.859,0.7104,0.7683,0.8884,0.6909,0.9276,0.9219,0.8894,0.7571,0.6974,0.7267,0.7986,0.8846,0.6251,0.7913,0.8075,0.9579,0.8911,0.6952,0.9613,0.843,0.9271,0.7957,0.9436,0.7739,0.8836,0.786,0.8893,0.7921,0.8587,0.8348,0.9525,0.9389,0.7288,0.9429,0.7796,0.897,0.8114,0.7937,0.9514,0.9295,0.9228,0.7683,0.9195,0.883,0.9172,0.6776,0.922,0.9335,0.4331,0.8917,0.6232,0.7826,0.7407,0.9046,0.785,0.6843,0.818,0.8738,0.8599,0.822,0.8142,0.8232,0.6073,0.8298,0.6155,0.7793,0.8614,0.9562,0.9292,0.9502,0.923,0.5969,0.758,0.9211,0.7926,0.9221,0.6937,0.7571,0.7922,0.9169,0.834,0.8,0.8192,0.6602,0.8062,0.5669,0.7886,0.751,0.8508,0.8608,0.8067,0.9391,0.8051,0.914,0.6037,0.8546,0.9196,0.9181,0.9436,0.7538,0.9076,0.8643,0.835,0.9562,0.9628,0.8123,0.8135,0.5547,0.814,0.7983,0.6981,0.8128,0.9558,0.7652,0.7982,0.9452,0.9365,0.8262,0.8309,0.8538,0.6892,0.5931,0.7378,0.8765,0.7139,0.9336,0.9017,0.6389,0.7727,0.7808,0.8489,0.9133,0.9471,0.9074,0.9312,0.924,0.5906,0.8189,0.9495,0.8036,0.8147,0.8654,0.6006,0.7997,0.8534,0.7771,0.8758,0.8035,0.9302,0.8029,0.932,0.5945,0.7356,0.9597,0.7133,0.7605,0.8652,0.9463,0.8403,0.8119,0.9309,0.9483,0.9576,0.7623,0.9528,0.9562,0.9656,0.8419,0.8719,0.8264,0.5329,0.5927,0.9572,0.9375,0.8972,0.6491,0.7345,0.9553,0.6289,0.8155,0.7595,0.6341,0.9395,0.7564,0.8788,0.5985,0.9508,0.9266,0.8633,0.8115]}},{"step":3,"key":"strict_temporal","label":"Strict label + temporal split (honest)","auc":0.6047,"model":"Random Forest","target":"strict","split":"temporal","cut_year":2021,"still_cheating":"Nothing left to peel. Real completions vs terminations only, trained on the past to predict the future. Near the 0.50 coin-flip: trial completion is barely predictable from registration metadata, and that is the finding.","n_test":411,"test_base_rate":0.377,"roc":{"fpr":[0.0,0.0039,0.0039,0.0156,0.0195,0.0234,0.0273,0.0391,0.0391,0.0508,0.0508,0.0547,0.0586,0.082,0.1055,0.1172,0.125,0.1445,0.1484,0.1523,0.1562,0.1797,0.2148,0.2148,0.2188,0.2266,0.2266,0.2461,0.2656,0.2695,0.2891,0.3008,0.3047,0.3242,0.3281,0.3477,0.375,0.3789,0.3828,0.3867,0.3945,0.3984,0.4023,0.4102,0.4219,0.4375,0.4375,0.4414,0.4531,0.4648,0.4805,0.4844,0.4883,0.5117,0.5117,0.5195,0.5352,0.5625,0.5742,0.5742,0.5977,0.6016,0.6055,0.6172,0.6211,0.6328,0.6367,0.6445,0.668,0.6914,0.6953,0.7031,0.7148,0.7188,0.7305,0.7383,0.7617,0.7695,0.7891,0.8086,0.8281,0.832,0.8359,0.8477,0.8477,0.8711,0.8945,0.9062,0.9062,0.9219,0.9258,0.9297,0.9297,0.9375,0.9414,0.9453,0.9609,0.9805,0.9883,1.0],"tpr":[0.0,0.0,0.0194,0.0452,0.0581,0.0645,0.0903,0.1097,0.1226,0.129,0.1742,0.2,0.2258,0.2516,0.2581,0.2645,0.2774,0.2774,0.3032,0.3097,0.3226,0.3355,0.3484,0.3548,0.3742,0.3871,0.4129,0.4258,0.4258,0.4387,0.4452,0.4581,0.471,0.471,0.4774,0.4903,0.4968,0.5161,0.5226,0.5226,0.5355,0.5484,0.5613,0.5677,0.5806,0.5806,0.6,0.6065,0.6129,0.6129,0.6194,0.6258,0.6323,0.6323,0.6387,0.6581,0.6645,0.6774,0.6839,0.7032,0.7161,0.729,0.7355,0.7419,0.7484,0.7484,0.7548,0.7613,0.7677,0.7677,0.7806,0.7871,0.7935,0.8065,0.8194,0.8323,0.8323,0.8323,0.8387,0.8387,0.8452,0.8516,0.8645,0.8774,0.8839,0.8839,0.8839,0.8903,0.9097,0.9097,0.929,0.9419,0.9548,0.9613,0.9677,0.9742,0.9806,0.9935,1.0,1.0]},"importance":[{"feature":"start_year","importance":0.2533},{"feature":"phase_clean","importance":0.1103},{"feature":"n_primary_outcomes","importance":0.0903},{"feature":"sponsor_class_clean_Industry","importance":0.0602},{"feature":"is_recent","importance":0.0503},{"feature":"sponsor_class_clean_Academic / Non-profit","importance":0.0368},{"feature":"cancer_type_Multiple Myeloma","importance":0.0361},{"feature":"cancer_type_Lymphoma","importance":0.0336},{"feature":"cancer_type_Renal/Kidney","importance":0.0312},{"feature":"cancer_type_Leukemia (AML)","importance":0.0278},{"feature":"cancer_type_Breast Cancer","importance":0.0164},{"feature":"cancer_type_Other Cancer","importance":0.0154}],"pred":{"y_true":[1,0,0,1,1,0,1,0,1,1,0,1,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,1,1,0,1,0,1,1,0,0,0,1,1,0,0,0,1,0,0,1,0,1,0,0,1,1,1,0,1,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,0,0,0,1,0,1,0,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,0,0,1,0,1,1,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,1,0,1,0,1,0,0,0,0,0,1,1,0,0,1,0,0,1,1,1,0,1,1,0,0,0,0,0,0,0,1,1,0,1,1,1,1,0,1,1,1,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,1,0,1,1,0,1,0,1,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0,1,0,0,0,0,0,1,0,0,1,1,0,1,0,0,0,0,1,1,1,0,0,0,0,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,0,1,1,0,0,1,0,0,1,1,0,1],"y_prob":[0.247,0.2534,0.2972,0.4415,0.7142,0.5356,0.4774,0.4472,0.6664,0.7172,0.4028,0.6442,0.4613,0.7376,0.5636,0.6241,0.6809,0.5289,0.5239,0.561,0.5114,0.5234,0.5488,0.728,0.4611,0.4539,0.4764,0.6241,0.4468,0.7286,0.7376,0.5414,0.5688,0.3928,0.511,0.7205,0.7329,0.6407,0.5114,0.7062,0.555,0.4748,0.562,0.4468,0.7027,0.47,0.369,0.6741,0.5251,0.4922,0.2865,0.5567,0.6241,0.3645,0.6809,0.7144,0.6113,0.5141,0.6331,0.4863,0.2223,0.555,0.5466,0.5809,0.5141,0.4631,0.5972,0.4301,0.4468,0.7112,0.6489,0.5331,0.5034,0.6809,0.6197,0.4515,0.5817,0.5305,0.5239,0.4886,0.5817,0.3211,0.5495,0.6473,0.6279,0.5354,0.6372,0.5185,0.5083,0.5339,0.496,0.6297,0.5146,0.6302,0.6286,0.7029,0.6803,0.7239,0.5016,0.4516,0.5909,0.5289,0.5713,0.6754,0.5185,0.4714,0.5354,0.3253,0.6237,0.5234,0.5289,0.5531,0.647,0.5331,0.5111,0.4665,0.682,0.4111,0.591,0.5516,0.4859,0.5106,0.5108,0.4699,0.5177,0.682,0.6263,0.3541,0.64,0.6335,0.4859,0.5748,0.6302,0.6484,0.6803,0.6302,0.6831,0.7106,0.5219,0.5516,0.4859,0.6437,0.5234,0.6071,0.5405,0.5247,0.6426,0.4859,0.5247,0.5909,0.5444,0.5847,0.412,0.4651,0.4435,0.5909,0.4823,0.6803,0.6302,0.6285,0.4988,0.5325,0.3267,0.5599,0.3829,0.5248,0.4327,0.5219,0.4171,0.2534,0.4689,0.2865,0.373,0.5909,0.5914,0.4794,0.2517,0.2865,0.3931,0.3733,0.6496,0.5349,0.3928,0.4516,0.6809,0.5219,0.5909,0.4183,0.5525,0.4123,0.6325,0.7763,0.3637,0.5114,0.5574,0.4644,0.2534,0.4597,0.647,0.6323,0.6241,0.3649,0.4348,0.4018,0.4056,0.3694,0.7239,0.5769,0.412,0.5461,0.4183,0.5177,0.7205,0.5769,0.5135,0.7106,0.4529,0.727,0.4327,0.6263,0.6831,0.5114,0.59,0.6768,0.7114,0.5972,0.412,0.6803,0.6496,0.749,0.4516,0.6945,0.4689,0.6803,0.5339,0.6445,0.4597,0.4805,0.562,0.6405,0.6263,0.647,0.4525,0.7175,0.5223,0.5946,0.7142,0.4516,0.6803,0.4327,0.5671,0.5331,0.545,0.3649,0.6113,0.589,0.6809,0.3726,0.6809,0.4529,0.7205,0.3564,0.4529,0.6279,0.5457,0.7144,0.6241,0.4597,0.5289,0.6809,0.5488,0.6139,0.6563,0.6809,0.6265,0.3211,0.412,0.6265,0.5783,0.6302,0.4613,0.5202,0.5237,0.4613,0.4889,0.4326,0.7106,0.3889,0.482,0.561,0.6484,0.7106,0.5114,0.7205,0.7106,0.5769,0.2385,0.5601,0.5289,0.5561,0.5114,0.5584,0.636,0.6113,0.5771,0.6286,0.511,0.5219,0.6261,0.5769,0.7001,0.6044,0.247,0.4472,0.6309,0.4529,0.5388,0.7523,0.727,0.2223,0.6563,0.4417,0.496,0.5318,0.7329,0.6241,0.7329,0.3601,0.4018,0.5404,0.4785,0.4914,0.6302,0.7523,0.5472,0.5412,0.4529,0.5769,0.7291,0.5114,0.5628,0.7282,0.4138,0.7205,0.4905,0.6831,0.6286,0.4699,0.5436,0.5551,0.4785,0.4576,0.5969,0.5551,0.3451,0.4597,0.4067,0.6711,0.4212,0.4859,0.4785,0.4786,0.4597,0.5219,0.6302,0.566,0.4741,0.7286,0.4711,0.7376,0.4922,0.6489,0.727,0.705,0.6331,0.561,0.5339,0.4141,0.5146,0.511,0.7376,0.5975,0.3823,0.6357,0.4472,0.5388,0.5003,0.544,0.5831,0.5234,0.375,0.5219,0.5444,0.5364,0.48,0.4859,0.5561,0.3645,0.3665,0.5831,0.5016,0.407,0.4437,0.7213,0.6431,0.6831,0.4081,0.5433,0.6302,0.473,0.6335]}}],"callouts":{"inprogress_share_of_positives":0.639,"time_only_auc_bundled":0.6781,"no_time_auc_bundled":0.6149,"share_of_above_chance_from_time":0.815},"leakage_audit":{"feature_sets":{"full":["cancer_type","is_hematologic","is_recent","log_enrollment","n_countries","n_primary_outcomes","phase_clean","results_available","sponsor_class_clean","start_year","trial_era","tumor_category"],"registration":["cancer_type","is_hematologic","is_recent","n_primary_outcomes","phase_clean","sponsor_class_clean","start_year","trial_era","tumor_category"],"dropped_for_reg":["log_enrollment","n_countries","results_available"]},"leak_features":{"results_available":"Post-outcome. True only for trials that completed AND posted results; a terminated trial essentially never has this.","log_enrollment":"Conduct-time. Uses the actual enrolled count, which is mechanically small for trials that terminated early. Reverse causality.","n_countries":"Conduct-time. Trial sites can be added after registration."},"models":{"Logistic Regression":{"full_auc":0.8863,"reg_auc":0.6662,"delta_auc":-0.2201},"Random Forest":{"full_auc":0.8963,"reg_auc":0.7185,"delta_auc":-0.1778},"Gradient Boosting":{"full_auc":0.8925,"reg_auc":0.7062,"delta_auc":-0.1863}}},"label_audit":{"bundled":{"reg_auc_random":0.7185,"reg_auc_temporal":0.6021,"time_only_auc":0.6781,"no_time_auc":0.6149,"n":3745,"positive_rate":0.811,"cut_year":2024},"strict":{"reg_auc_random":0.7398,"reg_auc_temporal":0.6047,"time_only_auc":0.7493,"no_time_auc":0.6339,"n":1804,"positive_rate":0.609,"cut_year":2021}},"label_composition":{"n_labeled":3745,"n_positive":3039,"positive_rate":0.811,"positive_class_by_status":{"RECRUITING":1334,"COMPLETED":1098,"ACTIVE_NOT_RECRUITING":607},"inprogress_share_of_positives":0.639,"median_start_year":{"completed":2017,"in_progress":2023,"failures":2019},"by_era":[{"era":"1990s","n":11,"success_rate":0.727,"pct_positives_in_progress":0.125},{"era":"2000s","n":145,"success_rate":0.841,"pct_positives_in_progress":0.066},{"era":"2010-2014","n":308,"success_rate":0.808,"pct_positives_in_progress":0.153},{"era":"2015-2019","n":1132,"success_rate":0.737,"pct_positives_in_progress":0.361},{"era":"2020+","n":2149,"success_rate":0.85,"pct_positives_in_progress":0.872}]},"leak_note":"Three layers of leakage. (1) Conduct-time features (results_available, log_enrollment, n_countries) are determined while the trial runs, so they encode the outcome; removing them drops AUC ~0.90 -> ~0.72. (2) The bundled success label counts RECRUITING and ACTIVE_NOT_RECRUITING trials as successes, and 64% of all 'successes' are these not-yet-completed trials, concentrated in recent years (median start 2023). So calendar recency predicts the label by construction; time features alone score 0.678. (3) A random split lets the model see the same eras in train and test. Using the strict label (COMPLETED vs TERMINATED/WITHDRAWN/SUSPENDED) with a temporal split (train on the past, test on the future) removes both, leaving AUC ~0.60."}</script>
+<script>
+const ACCENT="#0e7c7b", BLUE="#2563eb", GREY="#9aa7b2", WARN="#c2410c";
+let DATA=null, step=0, cost={fp:1,fn:1}, rocChart=null, impChart=null;
+
+async function getData(){
+  try{
+    const r=await fetch('../artifacts/results.json',{cache:'no-store'});
+    if(r.ok){ const j=await r.json(); if(j&&j.arc) return j; }
+  }catch(e){}
+  try{
+    const j=JSON.parse(document.getElementById('results-data').textContent);
+    if(j&&j.arc) return j;
+  }catch(e){}
+  return null;
+}
+function fmt(x,d=2){return Number(x).toFixed(d);}
+function pct(x){return (x*100).toFixed(1)+'%';}
+
+function confusionAt(pred,t){
+  let tp=0,fp=0,tn=0,fn=0;
+  for(let i=0;i<pred.y_true.length;i++){
+    const pos=pred.y_prob[i]>=t;
+    if(pred.y_true[i]===1){pos?tp++:fn++;}else{pos?fp++:tn++;}
+  }
+  return {tp,fp,tn,fn};
+}
+function totalCost(c){return cost.fp*c.fp+cost.fn*c.fn;}
+function bestThreshold(pred){
+  let best=1e18,bt=0.5;
+  for(let t=0;t<=1.0001;t+=0.01){const c=confusionAt(pred,t);const tc=totalCost(c);if(tc<best){best=tc;bt=t;}}
+  return {bt,best};
+}
+// cost of the trivial "back everyone" / "back no one" rules
+function trivialBest(pred){
+  const all=confusionAt(pred,0), none=confusionAt(pred,1.01);
+  return Math.min(totalCost(all),totalCost(none));
+}
+
+function renderArc(){
+  const a=DATA.arc, colors=['s1','s2','s3'];
+  const el=document.getElementById('arc'); el.innerHTML='';
+  a.forEach((s,i)=>{
+    const d=document.createElement('div'); d.className='num '+colors[i];
+    d.innerHTML=`<div class="v">${fmt(s.auc)}</div><div class="l">${s.label}</div>`;
+    el.appendChild(d);
+    if(i<a.length-1){const ar=document.createElement('div');ar.className='arrow';ar.textContent='→';el.appendChild(ar);}
+  });
+  document.getElementById('punchline').textContent=DATA.headline.punchline;
+  document.getElementById('gen').textContent='Generated '+(DATA.generated_at||'');
+  // stats band
+  document.getElementById('s_inprog').textContent=pct(DATA.callouts.inprogress_share_of_positives);
+  document.getElementById('s_timeonly').textContent=fmt(DATA.callouts.time_only_auc_bundled,3);
+  document.getElementById('s_share').textContent=pct(DATA.callouts.share_of_above_chance_from_time);
+}
+
+function renderSteps(){
+  const el=document.getElementById('steps'); el.innerHTML='';
+  DATA.arc.forEach((s,i)=>{
+    const b=document.createElement('button'); b.setAttribute('role','tab');
+    b.setAttribute('aria-selected', i===step?'true':'false');
+    b.innerHTML=`<span class="sn">Step ${s.step}</span><span class="st">${s.label}</span>`;
+    b.onclick=()=>{step=i; render();};
+    el.appendChild(b);
+  });
+}
+
+function leakNote(s){
+  const top=s.importance[0].feature;
+  if(s.key==='leaked') return `Top signal: <b>${top}</b>. A conduct-time leak. It is only known after the trial runs, so the model is partly reading the outcome.`;
+  if(s.key==='naive_clean') return `Top signal: <b>${top}</b>. That is calendar recency, not trial quality. The model scores points just for spotting a newer trial.`;
+  return `Top signal: <b>${top}</b>. No feature dominates now. There is little real signal left to lean on.`;
+}
+
+function drawRoc(s){
+  const pts=s.roc.fpr.map((f,i)=>({x:f,y:s.roc.tpr[i]}));
+  const c=confusionAt(s.pred, parseFloat(document.getElementById('thr').value));
+  const op=[{x:c.fp/(c.fp+c.tn||1), y:c.tp/(c.tp+c.fn||1)}];
+  const cfg={
+    type:'line',
+    data:{datasets:[
+      {label:'ROC',data:pts,borderColor:ACCENT,backgroundColor:'rgba(14,124,123,.08)',
+       borderWidth:2.5,fill:true,pointRadius:0,tension:.1},
+      {label:'Chance',data:[{x:0,y:0},{x:1,y:1}],borderColor:GREY,borderWidth:1,
+       borderDash:[5,5],pointRadius:0},
+      {label:'Your threshold',data:op,borderColor:BLUE,backgroundColor:BLUE,
+       pointRadius:6,pointHoverRadius:7,showLine:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:false,
+      scales:{x:{type:'linear',min:0,max:1,title:{display:true,text:'False positive rate'},grid:{color:'#eef2f6'}},
+              y:{min:0,max:1,title:{display:true,text:'True positive rate'},grid:{color:'#eef2f6'}}},
+      plugins:{legend:{display:true,labels:{boxWidth:12,font:{size:11}}},
+        tooltip:{callbacks:{label:c=>`FPR ${fmt(c.parsed.x)} , TPR ${fmt(c.parsed.y)}`}}}}
+  };
+  if(rocChart) rocChart.destroy();
+  rocChart=new Chart(document.getElementById('roc'),cfg);
+}
+
+function updateOperatingPoint(s){
+  const c=confusionAt(s.pred, parseFloat(document.getElementById('thr').value));
+  rocChart.data.datasets[2].data=[{x:c.fp/(c.fp+c.tn||1), y:c.tp/(c.tp+c.fn||1)}];
+  rocChart.update('none');
+}
+
+function drawImp(s){
+  const top=s.importance.slice(0,8);
+  const labels=top.map(d=>d.feature.length>22?d.feature.slice(0,21)+'…':d.feature);
+  const vals=top.map(d=>d.importance);
+  const cols=top.map((d,i)=>i===0?ACCENT:'#b9c6d0');
+  const cfg={type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:cols,borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:false,
+      scales:{x:{title:{display:true,text:'Importance'},grid:{color:'#eef2f6'}},y:{grid:{display:false},ticks:{font:{size:11}}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.parsed.x,3)}}}}};
+  if(impChart) impChart.destroy();
+  impChart=new Chart(document.getElementById('imp'),cfg);
+}
+
+function renderTool(s){
+  const t=parseFloat(document.getElementById('thr').value);
+  document.getElementById('thval').textContent=fmt(t);
+  const c=confusionAt(s.pred,t);
+  document.getElementById('tp').textContent=c.tp;
+  document.getElementById('fp').textContent=c.fp;
+  document.getElementById('fn').textContent=c.fn;
+  document.getElementById('tn').textContent=c.tn;
+  const myCost=totalCost(c), triv=trivialBest(s.pred), best=bestThreshold(s.pred);
+  const beatsTrivial=best.best < triv-1e-9;
+  let v;
+  if(s.key==='strict_temporal'){
+    v = beatsTrivial
+      ? `At its best threshold this model saves only a little over backing one group for everyone. Near-chance AUC leaves almost no room to act.`
+      : `No threshold beats the trivial rule of treating every trial the same. At AUC ${fmt(s.auc)} there is nothing to act on.`;
+  } else if(s.key==='naive_clean'){
+    v = `Notice the model rarely predicts failure: scores bunch above 0.43, so at most thresholds it backs nearly everything. The apparent skill does not turn into a clean decision.`;
+  } else {
+    v = `This looks usable, but the separation comes from features you would not have at registration. In production these inputs are not there yet.`;
+  }
+  document.getElementById('verdict').innerHTML=v;
+}
+
+function render(){
+  const s=DATA.arc[step];
+  renderSteps();
+  document.getElementById('aucval').textContent=fmt(s.auc);
+  const cheat=document.getElementById('cheat');
+  cheat.textContent=s.still_cheating;
+  cheat.className='cheat'+(s.key==='strict_temporal'?' clean':'');
+  document.getElementById('leaknote').innerHTML=leakNote(s);
+  drawRoc(s); drawImp(s); renderTool(s);
+}
+
+function wire(){
+  document.getElementById('thr').addEventListener('input',()=>{
+    const s=DATA.arc[step]; renderTool(s); if(rocChart) updateOperatingPoint(s);
+  });
+  document.querySelectorAll('#presets button').forEach(b=>{
+    b.onclick=()=>{
+      cost={fp:+b.dataset.fp, fn:+b.dataset.fn};
+      document.querySelectorAll('#presets button').forEach(x=>x.setAttribute('aria-pressed','false'));
+      b.setAttribute('aria-pressed','true');
+      renderTool(DATA.arc[step]);
+    };
+  });
+}
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  DATA=await getData();
+  if(!DATA){ const e=document.getElementById('err'); e.style.display='block';
+    e.textContent='Could not load results.json. Serve the repo over http (for example: python -m http.server) and open web/index.html.'; return; }
+  if(typeof Chart==='undefined'){ await new Promise(r=>{const i=setInterval(()=>{if(typeof Chart!=='undefined'){clearInterval(i);r();}},50);}); }
+  renderArc(); wire(); render();
+});
+</script>
+</body>
+</html>
