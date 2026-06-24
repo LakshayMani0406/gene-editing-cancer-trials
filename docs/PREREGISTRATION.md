@@ -77,7 +77,7 @@ Every hazard ratio including null ones, the full null-distribution summary, any 
 
 ## 8. Software and reproducibility
 
-Python 3.11, scikit-learn 1.6.1, NumPy 2.2.3, pandas 2.3.3, and lifelines (version to be recorded once installed, pending approval). Seed 42. Machine-readable outputs: `artifacts/survival.json` and `artifacts/permutation_null.json`. Plots to `outputs/`.
+Python 3.11, scikit-learn 1.6.1, NumPy 2.2.3, pandas 2.3.3, lifelines 0.30.3, and matplotlib 3.10.0. Seed 42. Machine-readable outputs: `artifacts/survival.json` and `artifacts/permutation_null.json`. Plots to `outputs/`.
 
 ## 9. References
 
