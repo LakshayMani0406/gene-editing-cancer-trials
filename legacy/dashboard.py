@@ -7,17 +7,29 @@ from pathlib import Path
 from collections import Counter
 from itertools import combinations
 
-Path("outputs").mkdir(exist_ok=True)
+ROOT = Path(__file__).resolve().parent.parent
+(ROOT / "outputs").mkdir(exist_ok=True)
 
-df  = pd.read_csv("data/crispr_trials_clean.csv")
-pub = pd.read_csv("data/publication_trends_clean.csv")
+df  = pd.read_csv(ROOT / "data" / "crispr_trials_clean.csv")
+pub = pd.read_csv(ROOT / "data" / "publication_trends_clean.csv")
 try:
-    with open("outputs/model_results.json") as f: mr = json.load(f)
+    with open(ROOT / "outputs" / "model_results.json") as f: mr = json.load(f)
 except: mr = {}
 
 try:
-    with open("outputs/findings.json") as f: findings = json.load(f)
+    with open(ROOT / "outputs" / "findings.json") as f: findings = json.load(f)
 except: findings = {}
+
+# Leakage audit + survival study, the single source of truth for every AUC shown on this dashboard.
+try:
+    with open(ROOT / "artifacts" / "results.json") as f: res = json.load(f)
+except: res = {}
+try:
+    with open(ROOT / "artifacts" / "survival.json") as f: surv = json.load(f)
+except: surv = {}
+try:
+    with open(ROOT / "artifacts" / "permutation_null.json") as f: perm = json.load(f)
+except: perm = {}
 
 df_l = df[df["trial_outcome"].notna()].copy()
 
@@ -654,6 +666,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
   <div class="tab" onclick="show('discoveries',this)">🔭 Discoveries</div>
   <div class="tab" onclick="show('stats',this)">Statistics</div>
   <div class="tab" onclick="show('ml',this)">ML Models</div>
+  <div class="tab" onclick="show('study',this)">🔬 Study</div>
   <div class="tab" onclick="show('pubs',this)">Publications</div>
 </div>
 <div class="content">
@@ -670,7 +683,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
       <span class="atag b">4,460 Clinical Trials</span>
       <span class="atag b">80+ Countries</span>
       <span class="atag p">11 ML Classifiers</span>
-      <span class="atag p">AUC = 0.90</span>
+      HEROBADGE
       <span class="atag o">5 Novel Research Findings</span>
       <span class="atag o">3D Protein Viewer</span>
     </div>
@@ -832,8 +845,8 @@ body.beginner-mode .bm-label-beg{display:inline!important}
       <div class="wt-icon" style="background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)">🤖</div>
       <div>
         <div class="wt-title">ML Models</div>
-        <div class="wt-desc">11 classifiers trained on 2,996 trials, tested on 749. Random Forest (Tuned) achieves best accuracy (89.6%), Soft Voting Ensemble best AUC (0.90). GridSearchCV applied to RF and XGBoost. Features: enrollment, phase, sponsor, cancer type, era, geography. Full results table with AUC bars.</div>
-        <div class="wt-feats"><span class="wt-feat">11 classifiers</span><span class="wt-feat">GridSearchCV</span><span class="wt-feat">Ensemble</span><span class="wt-feat">AUC = 0.90</span></div>
+        <div class="wt-desc">ABOUTDESC</div>
+        <div class="wt-feats"><span class="wt-feat">11 classifiers</span><span class="wt-feat">GridSearchCV</span><span class="wt-feat">Ensemble</span>ABOUTFEAT</div>
       </div>
     </div>
 
@@ -1066,15 +1079,21 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 
 <!-- ML -->
 <div class="panel" id="panel-ml">
-  <div class="insight"><div class="insight-icon">🤖</div><div class="insight-text"><h4>Can a Computer Predict Trial Success?</h4><p>We trained <strong>11 machine learning models</strong> to predict whether a cancer trial will succeed or fail, using features like cancer type, how many patients enrolled, trial phase, and who's funding it. <strong>The best model (Soft Voting Ensemble) correctly predicts outcomes 90% of the time</strong> - far better than random guessing. This confirms that trial success is not random: it follows patterns.</p></div></div>
+  <div class="insight"><div class="insight-icon">🤖</div><div class="insight-text"><h4>Can a Computer Predict Trial Success?</h4><p>MLHEADER</p></div></div>
+  MLARC
   <div class="grid2" style="margin-bottom:15px">
-    <div class="card"><h3>AUC-ROC - All Models</h3><canvas id="c-models" height="270"></canvas></div>
+    <div class="card"><h3>AUC-ROC, all models (leaked baseline)</h3><canvas id="c-models" height="270"></canvas></div>
     <div class="card"><h3>Accuracy vs AUC</h3><canvas id="c-scatter" height="270"></canvas></div>
   </div>
-  <div class="card"><h3>Full Model Results</h3>
+  <div class="card"><h3>Full-feature model results (leaked baseline, not the real performance)</h3>
     <table><thead><tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>AUC-ROC</th><th>Bar</th></tr></thead>
     <tbody id="ml-tbody"></tbody></table>
   </div>
+</div>
+
+<!-- STUDY -->
+<div class="panel" id="panel-study">
+  STUDY_PLACEHOLDER
 </div>
 
 <!-- PUBS -->
@@ -1613,14 +1632,121 @@ function _renderDiscoveries(){
   }
 }
 
-const RENDERERS={about:()=>{},overview:renderOverview,trials:renderTrials,compare:renderCompare,mol:renderMol,predictor:renderPredictor,discoveries:renderDiscoveries,stats:renderStats,ml:renderML,pubs:renderPubs};
+const RENDERERS={about:()=>{},overview:renderOverview,trials:renderTrials,compare:renderCompare,mol:renderMol,predictor:renderPredictor,discoveries:renderDiscoveries,stats:renderStats,ml:renderML,study:()=>{},pubs:renderPubs};
 renderOverview();rendered['overview']=true;
 </script></body></html>"""
 
+# Leakage-arc display fragments, sourced from artifacts/results.json (single source of truth).
+_arc  = {s.get("key"): s for s in res.get("arc", [])}
+_call = res.get("callouts", {})
+if {"leaked", "naive_clean", "strict_temporal"} <= set(_arc):
+    A0 = f"{_arc['leaked']['auc']:.2f}"
+    A1 = f"{_arc['naive_clean']['auc']:.2f}"
+    A2 = f"{_arc['strict_temporal']['auc']:.2f}"
+    R0 = _arc['leaked']['still_cheating']
+    R1 = _arc['naive_clean']['still_cheating']
+    R2 = _arc['strict_temporal']['still_cheating']
+    INPROG   = f"{_call.get('inprogress_share_of_positives', 0) * 100:.1f}%"
+    TIMEONLY = f"{_call.get('time_only_auc_bundled', 0):.3f}"
+    hero_badge = f'<span class="atag p">AUC {A0} leaked &rarr; {A2} honest</span>'
+    about_desc = (f"11 classifiers trained on 2,996 trials, tested on 749. The full-feature models reach about AUC "
+                  f"{A0}, but that number leaks signal that only exists after a trial runs. Once I audit it, the honest "
+                  f"registration-time result is about {A2}. I report the whole arc: {A0} leaked, {A1} naive-clean, "
+                  f"{A2} strict-temporal. The full table below is kept as the leaked baseline.")
+    about_feat = f'<span class="wt-feat">AUC {A0} leaked</span><span class="wt-feat">{A2} honest</span>'
+    ml_header  = (f"I trained 11 classifiers to predict whether a trial completes. The best full-feature model looked "
+                  f"like AUC {A0}, but I do not trust it: it leaks conduct-time signal and a recency-biased label. "
+                  f"After auditing, the honest registration-time result is about AUC {A2}, barely above the 0.50 coin "
+                  f"flip. Everything in the table below is that leaked baseline, not the real performance.")
+    ml_arc = (
+        '<div class="card" style="margin-bottom:15px;border-left:3px solid #00d4aa">'
+        '<h3>Leakage audit: the honest arc</h3>'
+        '<div style="display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 4px">'
+        f'<div style="flex:1;min-width:160px"><div style="font-size:1.9rem;font-weight:700;color:#ef4444">{A0}</div>'
+        f'<div style="font-size:.73rem;color:#8ab4d4;line-height:1.5">leaked. {R0}</div></div>'
+        f'<div style="flex:1;min-width:160px"><div style="font-size:1.9rem;font-weight:700;color:#f59e0b">{A1}</div>'
+        f'<div style="font-size:.73rem;color:#8ab4d4;line-height:1.5">naive-clean. {R1}</div></div>'
+        f'<div style="flex:1;min-width:160px"><div style="font-size:1.9rem;font-weight:700;color:#22c55e">{A2}</div>'
+        f'<div style="font-size:.73rem;color:#8ab4d4;line-height:1.5">strict-temporal. {R2}</div></div>'
+        '</div>'
+        f'<p style="font-size:.82rem;color:#c8dff5;margin-top:10px">Two findings drive the drop: {INPROG} of the '
+        f'trials labelled a success had not actually completed yet, and start year on its own scores AUC {TIMEONLY}. '
+        f'The honest number is about {A2}, near a coin flip.</p>'
+        '</div>'
+    )
+else:
+    hero_badge = '<span class="atag p">Leakage-audited</span>'
+    about_desc = ("11 classifiers trained on 2,996 trials, tested on 749. The full-feature numbers are a leaked "
+                  "baseline; see artifacts/results.json for the audited arc and the honest number.")
+    about_feat = '<span class="wt-feat">Leakage-audited</span>'
+    ml_header  = ("I trained 11 classifiers. The full-feature numbers below are a leaked baseline, not the real "
+                  "performance. Regenerate artifacts/results.json to show the audited arc here.")
+    ml_arc = ('<div class="card" style="margin-bottom:15px"><h3>Leakage audit</h3>'
+              '<p style="font-size:.82rem;color:#c8dff5">artifacts/results.json was not found when this page was built.</p></div>')
+
 HTML = HTML.replace("DATAPLACEHOLDER", D)
-with open("outputs/dashboard.html","w",encoding="utf-8") as f:
+# Study tab, sourced from results.json + survival.json + permutation_null.json. No hardcoded numbers.
+def _study_html():
+    arc = res.get("headline", {}).get("arc_auc", [])
+    cov = surv.get("cox", {}).get("covariates", {})
+    ci = surv.get("cox", {}).get("c_index")
+    if not (len(arc) >= 3 and ci is not None and perm.get("observed_auc") is not None):
+        return ('<div class="insight"><div class="insight-text"><h4>Study</h4>'
+                '<p>Run src/run.py, src/survival.py and src/permutation_null.py first; '
+                'their artifacts feed this tab.</p></div></div>')
+    A0, A1, A2 = (f"{a:.2f}" for a in arc[:3])
+    ind, ph3 = cov.get("sponsor_Industry", {}), cov.get("phase_Phase III", {})
+    f3 = lambda d, k: f"{d[k]:.3f}" if isinstance(d.get(k), (int, float)) else "?"
+    n_viol = len(surv.get("ph_assumption", {}).get("violations_p_lt_0.05", []))
+    lr = surv.get("km_by_phase", {}).get("logrank", {})
+    obs, nm = perm["observed_auc"], perm["null_mean"]
+    lo, hi = perm["null_ci95"]; pval = perm["empirical_p_one_sided"]
+    nge, nperm = perm["n_null_ge_observed"], perm["n_permutations"]
+    inprog = res.get("callouts", {}).get("inprogress_share_of_positives", 0) * 100
+    return f"""
+  <div class="insight"><div class="insight-icon">🔬</div><div class="insight-text"><h4>Is trial completion predictable from registration data?</h4>
+  <p>I tested this three independent ways and they agree: barely. The honest models score about AUC {A2}, just above a coin flip and far below anything usable. The signal is statistically real but practically worthless, and that negative result, pre-registered and proven three ways, is the contribution.</p></div></div>
+  <div class="grid3" style="margin-bottom:15px">
+    <div class="card"><h3>1. Leakage audit</h3>
+      <div style="display:flex;gap:8px;align-items:center;font-family:monospace;font-size:1.3rem;font-weight:700">
+        <span style="color:#ef4444">{A0}</span><span style="color:#7a9bbf">&rarr;</span><span style="color:#f59e0b">{A1}</span><span style="color:#7a9bbf">&rarr;</span><span style="color:#22c55e">{A2}</span></div>
+      <p style="font-size:.78rem;color:#8ab4d4;margin-top:8px">Same model, fixed. Strip the conduct-time leaks, then the recency-biased label and the random split: AUC falls from {A0} leaked to {A1} naive-clean to {A2} strict label with a temporal split.</p></div>
+    <div class="card"><h3>2. Permutation null</h3>
+      <div style="font-family:monospace;font-size:1.3rem;font-weight:700;color:#22c55e">{obs:.4f}</div>
+      <p style="font-size:.78rem;color:#8ab4d4;margin-top:8px">Observed AUC against a 1,000-shuffle null (mean {nm:.4f}, 95% band [{lo:.2f}, {hi:.3f}]). {nge} of {nperm} null draws reached it, empirical one-sided p = {pval:.3f}. Real, but tiny.</p></div>
+    <div class="card"><h3>3. Survival model</h3>
+      <div style="font-family:monospace;font-size:1.3rem;font-weight:700;color:#f59e0b">C-index {ci:.4f}</div>
+      <p style="font-size:.78rem;color:#8ab4d4;margin-top:8px">Cause-specific Cox concordance, right next to the {A2} classifier AUC. The proportional-hazards assumption fails ({n_viol} of {len(cov)} covariates), so even this modest number is an approximation.</p></div>
+  </div>
+  <div class="card" style="margin-bottom:15px;border-left:3px solid #f59e0b">
+    <h3>H1: statistically real, practically useless</h3>
+    <p style="font-size:.82rem;color:#c8dff5">The permutation test puts the honest AUC above its null 95th percentile (p = {pval:.3f}), so registration metadata does carry a real signal. But at {A2} it sits below the 0.65 line I pre-registered as practically useless, and the survival C-index of {ci:.2f} agrees. A real but worthless edge, not a failure. For context, {inprog:.1f}% of the trials labelled a success had not actually completed yet, which is what made the naive number look strong.</p>
+  </div>
+  <div class="grid2">
+    <div class="card" style="border-left:3px solid #ef4444"><h3>H3a, phase: my prediction was wrong</h3>
+      <p style="font-size:.82rem;color:#c8dff5">I predicted later phases complete faster. The data disagree. Phase III has a hazard ratio of {f3(ph3,'hr')} (95% CI [{f3(ph3,'ci_low')}, {f3(ph3,'ci_high')}]), the opposite direction: larger, longer Phase III trials complete more slowly inside the window. The Kaplan-Meier curves cross (log-rank chi-square {lr.get('chi2','?')}, p = {lr.get('p',0):.1e}) and the PH test flags phase as non-proportional.</p></div>
+    <div class="card" style="border-left:3px solid #22c55e"><h3>H3b, sponsor: the one positive edge</h3>
+      <p style="font-size:.82rem;color:#c8dff5">Industry-sponsored trials complete at a higher rate, hazard ratio {f3(ind,'hr')} (95% CI [{f3(ind,'ci_low')}, {f3(ind,'ci_high')}]), in the predicted direction and stable under the PH check. This is the single reliable signal in the study.</p></div>
+  </div>
+  <p class="muted" style="margin-top:14px;font-size:.76rem">Pre-registered before results in docs/PREREGISTRATION.md, full write-up with citations in docs/FINDINGS.md. Every number on this tab is read at build time from artifacts/results.json, survival.json, and permutation_null.json.</p>
+"""
+
+study_html = _study_html()
+with open(ROOT / "artifacts" / "comparisons.json", "w", encoding="utf-8") as f:
+    json.dump(ai_analyses, f, indent=2)
+
+HTML = HTML.replace("HEROBADGE", hero_badge)
+HTML = HTML.replace("ABOUTDESC", about_desc)
+HTML = HTML.replace("ABOUTFEAT", about_feat)
+HTML = HTML.replace("MLHEADER", ml_header)
+HTML = HTML.replace("MLARC", ml_arc)
+HTML = HTML.replace("STUDY_PLACEHOLDER", study_html)
+for _tok in ("HEROBADGE", "ABOUTDESC", "ABOUTFEAT", "MLHEADER", "MLARC", "STUDY_PLACEHOLDER"):
+    assert _tok not in HTML, f"placeholder {_tok} left unreplaced"
+out_path = ROOT / "outputs" / "dashboard.html"
+with open(out_path, "w", encoding="utf-8") as f:
     f.write(HTML)
-sz = Path("outputs/dashboard.html").stat().st_size/1024
+sz = out_path.stat().st_size / 1024
 print(f"\n  ✓ Dashboard → outputs/dashboard.html  ({sz:.0f} KB)")
 print(f"  AI analyses pre-generated for {len(ai_analyses)} cancer type pairs")
-print(f"  Tabs: Overview | Trials | ⚖ Compare+AI | 🧬 Molecular | 🎯 Predictor | 🔭 Discoveries | Stats | ML | Pubs")
+print(f"  Tabs: Overview | Trials | ⚖ Compare+AI | 🧬 Molecular | 🎯 Predictor | 🔭 Discoveries | Stats | ML | 🔬 Study | Pubs")
