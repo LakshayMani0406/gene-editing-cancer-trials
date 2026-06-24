@@ -5,14 +5,14 @@ Hypothesis testing on the real CRISPR cancer trial dataset.
 
 Tests:
   1. Levene's test (variance homogeneity)
-  2. One-Way ANOVA — enrollment by cancer type
-  3. Kruskal-Wallis H — enrollment by cancer type (non-parametric)
-  4. Tukey HSD post-hoc — pairwise enrollment comparisons
-  5. Mann-Whitney U — hematologic vs solid enrollment
-  6. Chi-Square — tumor category × trial outcome
-  7. Chi-Square — phase × trial outcome
-  8. Welch's t-test — enrollment: hematologic vs solid
-  9. Point-biserial correlation — enrollment × trial outcome
+  2. One-Way ANOVA - enrollment by cancer type
+  3. Kruskal-Wallis H - enrollment by cancer type (non-parametric)
+  4. Tukey HSD post-hoc - pairwise enrollment comparisons
+  5. Mann-Whitney U - hematologic vs solid enrollment
+  6. Chi-Square - tumor category × trial outcome
+  7. Chi-Square - phase × trial outcome
+  8. Welch's t-test - enrollment: hematologic vs solid
+  9. Point-biserial correlation - enrollment × trial outcome
 
 Usage:
     python statistical_tests.py    (run after clean_data.py)
@@ -58,7 +58,7 @@ def divider(title):
     print("=" * 65)
 
 def result_line(reject, alpha=0.05):
-    tag = "✓ REJECT H₀  — SIGNIFICANT" if reject else "✗ FAIL TO REJECT H₀  — not significant"
+    tag = "✓ REJECT H₀  - SIGNIFICANT" if reject else "✗ FAIL TO REJECT H₀  - not significant"
     return f"  → {tag}  (α={alpha})"
 
 def tukey_hsd(groups_dict, alpha=0.05):
@@ -87,13 +87,13 @@ def tukey_hsd(groups_dict, alpha=0.05):
 df_enr = df[df["enrollment_count"].notna() & (df["enrollment_count"] > 0)].copy()
 df_enr["log_enrollment"] = np.log1p(df_enr["enrollment_count"])
 
-# Group by cancer type — use min n>=2, fall back to tumor_category if too few groups
+# Group by cancer type - use min n>=2, fall back to tumor_category if too few groups
 ct_counts = df_enr["cancer_type"].value_counts()
 top_cancers = ct_counts[ct_counts >= 2].index.tolist()
 groups = {ct: df_enr[df_enr["cancer_type"]==ct]["log_enrollment"].values
           for ct in top_cancers}
 
-# Need at least 2 groups for ANOVA — fall back to tumor_category if needed
+# Need at least 2 groups for ANOVA - fall back to tumor_category if needed
 if len(groups) < 2:
     groups = {cat: df_enr[df_enr["tumor_category"]==cat]["log_enrollment"].values
               for cat in df_enr["tumor_category"].unique()
@@ -107,20 +107,20 @@ sol_enr = df_enr[df_enr["tumor_category"]=="Solid Tumor"]["log_enrollment"].valu
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. Levene's Test
 # ─────────────────────────────────────────────────────────────────────────────
-divider("1. LEVENE'S TEST — Variance homogeneity of enrollment by cancer type")
+divider("1. LEVENE'S TEST - Variance homogeneity of enrollment by cancer type")
 if len(groups) >= 2:
     lev_stat, lev_p = levene(*groups.values())
     print(f"  W = {lev_stat:.4f},  p = {lev_p:.6f}")
     print(result_line(lev_p < 0.05))
     if lev_p < 0.05:
-        print("  → Variances are heterogeneous — Welch's ANOVA / Kruskal-Wallis preferred.")
+        print("  → Variances are heterogeneous - Welch's ANOVA / Kruskal-Wallis preferred.")
     else:
-        print("  → Variances are homogeneous — standard ANOVA appropriate.")
+        print("  → Variances are homogeneous - standard ANOVA appropriate.")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 2. One-Way ANOVA
 # ─────────────────────────────────────────────────────────────────────────────
-divider("2. ONE-WAY ANOVA — Log-enrollment across cancer types")
+divider("2. ONE-WAY ANOVA - Log-enrollment across cancer types")
 f_stat, p_anova = f_oneway(*groups.values())
 k   = len(groups)
 N   = sum(len(v) for v in groups.values())
@@ -136,7 +136,7 @@ print(result_line(p_anova < 0.05))
 # ─────────────────────────────────────────────────────────────────────────────
 # 3. Kruskal-Wallis
 # ─────────────────────────────────────────────────────────────────────────────
-divider("3. KRUSKAL-WALLIS H TEST — Non-parametric alternative")
+divider("3. KRUSKAL-WALLIS H TEST - Non-parametric alternative")
 h_stat, p_kruskal = kruskal(*groups.values())
 print(f"  H({df_b}) = {h_stat:.4f},  p = {p_kruskal:.6f}")
 print(result_line(p_kruskal < 0.05))
@@ -144,7 +144,7 @@ print(result_line(p_kruskal < 0.05))
 # ─────────────────────────────────────────────────────────────────────────────
 # 4. Tukey HSD
 # ─────────────────────────────────────────────────────────────────────────────
-divider("4. TUKEY HSD POST-HOC — Pairwise log-enrollment comparisons")
+divider("4. TUKEY HSD POST-HOC - Pairwise log-enrollment comparisons")
 tukey_df = tukey_hsd(groups)
 sig_pairs = tukey_df[tukey_df["reject"]].sort_values("p_adj")
 print(f"  Total pairwise comparisons: {len(tukey_df)}")
@@ -156,9 +156,9 @@ if len(sig_pairs):
         print(f"  {r['group1']:<28} {r['group2']:<28} {r['meandiff']:>+12.3f} {r['p_adj']:>8.4f}")
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 5. Mann-Whitney U — Hematologic vs Solid
+# 5. Mann-Whitney U - Hematologic vs Solid
 # ─────────────────────────────────────────────────────────────────────────────
-divider("5. MANN-WHITNEY U — Enrollment: Hematologic vs Solid Tumor")
+divider("5. MANN-WHITNEY U - Enrollment: Hematologic vs Solid Tumor")
 u_stat, p_mwu = mannwhitneyu(hem_enr, sol_enr, alternative="two-sided")
 z_val = norm.ppf(min(p_mwu/2, 1-1e-10))
 r_eff = abs(z_val) / np.sqrt(len(hem_enr)+len(sol_enr))
@@ -169,9 +169,9 @@ print(f"  Solid Tumor: mean log-enroll={sol_enr.mean():.3f}  (raw median={np.exp
 print(result_line(p_mwu < 0.05))
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 6. Chi-Square — Tumor category × Trial outcome
+# 6. Chi-Square - Tumor category × Trial outcome
 # ─────────────────────────────────────────────────────────────────────────────
-divider("6. CHI-SQUARE — Tumor Category × Trial Outcome")
+divider("6. CHI-SQUARE - Tumor Category × Trial Outcome")
 ct1 = pd.crosstab(df_labeled["tumor_category"], df_labeled["trial_outcome"])
 print("  Observed (rows=category, cols=0=failure/1=success):")
 print(ct1.to_string()); print()
@@ -181,9 +181,9 @@ print(f"  χ²({dof1}) = {chi2_1:.4f},  p = {p_chi2_1:.6f},  Cramér's V = {v1:.
 print(result_line(p_chi2_1 < 0.05))
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 7. Chi-Square — Phase × Trial outcome
+# 7. Chi-Square - Phase × Trial outcome
 # ─────────────────────────────────────────────────────────────────────────────
-divider("7. CHI-SQUARE — Trial Phase × Trial Outcome")
+divider("7. CHI-SQUARE - Trial Phase × Trial Outcome")
 ct2 = pd.crosstab(df_labeled["phase_clean"], df_labeled["trial_outcome"])
 ct2_filtered = ct2[(ct2.sum(axis=1) >= 5)]   # only phases with >=5 trials
 chi2_2, p_chi2_2, dof2, _ = chi2_contingency(ct2_filtered)
@@ -194,7 +194,7 @@ print(result_line(p_chi2_2 < 0.05))
 # ─────────────────────────────────────────────────────────────────────────────
 # 8. Welch's t-test
 # ─────────────────────────────────────────────────────────────────────────────
-divider("8. WELCH'S t-TEST — Enrollment: Hematologic vs Solid Tumor")
+divider("8. WELCH'S t-TEST - Enrollment: Hematologic vs Solid Tumor")
 t_stat, p_ttest = ttest_ind(hem_enr, sol_enr, equal_var=False)
 d = (hem_enr.mean()-sol_enr.mean()) / np.sqrt((hem_enr.std()**2+sol_enr.std()**2)/2)
 print(f"  t = {t_stat:.4f},  p = {p_ttest:.6f},  Cohen's d = {d:.4f}")
@@ -203,7 +203,7 @@ print(result_line(p_ttest < 0.05))
 # ─────────────────────────────────────────────────────────────────────────────
 # 9. Point-biserial correlation
 # ─────────────────────────────────────────────────────────────────────────────
-divider("9. POINT-BISERIAL CORRELATION — Enrollment × Trial Outcome")
+divider("9. POINT-BISERIAL CORRELATION - Enrollment × Trial Outcome")
 df_both = df_labeled[df_labeled["enrollment_count"].notna()].copy()
 df_both["log_enrollment"] = np.log1p(df_both["enrollment_count"])
 if len(df_both) > 10:
@@ -242,7 +242,7 @@ for name, pval, note in results_table:
 # Figure 4
 # ─────────────────────────────────────────────────────────────────────────────
 fig, axes = plt.subplots(2, 2, figsize=(16, 12))
-fig.suptitle("Statistical Hypothesis Testing — Visual Summary", fontsize=14, color="white")
+fig.suptitle("Statistical Hypothesis Testing - Visual Summary", fontsize=14, color="white")
 
 # 4a. Box plots: enrollment by cancer type
 ax = axes[0, 0]

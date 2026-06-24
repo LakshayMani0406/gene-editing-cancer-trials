@@ -1,6 +1,6 @@
 """
-dashboard.py v5 — Gene-Editing Cancer Trials Dashboard
-AI analyses pre-generated at build time from real data — work fully offline.
+dashboard.py v5 - Gene-Editing Cancer Trials Dashboard
+AI analyses pre-generated at build time from real data - work fully offline.
 """
 import pandas as pd, numpy as np, json, re
 from pathlib import Path
@@ -69,40 +69,40 @@ for ct in df["cancer_type"].value_counts().head(15).index:
 
 # ── Molecular extraction ──────────────────────────────────────────────────
 TARGETS = {
-    "CD19":"B-cell antigen — #1 CAR-T target (leukemia/lymphoma)",
-    "CD22":"B-cell antigen — ALL, DLBCL",
-    "CD20":"B-cell marker — NHL, CLL",
-    "CD33":"Myeloid antigen — AML",
-    "CD38":"Plasma cell — Multiple Myeloma",
-    "CD123":"IL-3Rα — AML, BPDCN",
-    "CD7":"T-cell antigen — T-ALL",
-    "CD30":"TNF receptor — Hodgkin lymphoma",
-    "BCMA":"B-cell maturation antigen — Multiple Myeloma",
-    "HER2":"Growth factor receptor — Breast, gastric cancer",
-    "EGFR":"Epidermal growth factor receptor — Lung, GBM",
-    "GD2":"Disialoganglioside — Neuroblastoma, melanoma",
-    "CEA":"Carcinoembryonic antigen — Colorectal, lung",
-    "AFP":"Alpha-fetoprotein — Hepatocellular carcinoma",
-    "GPC3":"Glypican-3 — Hepatocellular carcinoma",
-    "Mesothelin":"Glycoprotein — Mesothelioma, ovarian, lung",
-    "PSMA":"Prostate-specific membrane antigen — Prostate cancer",
-    "MUC1":"Mucin-1 — Breast, ovarian cancer",
-    "ROR1":"Receptor tyrosine kinase — CLL, ALL",
-    "FLT3":"Tyrosine kinase — AML",
-    "PD-1":"Immune checkpoint — T-cell exhaustion",
-    "PD-L1":"PD-1 ligand — Tumor immune evasion",
-    "CTLA-4":"Immune checkpoint — T-cell inhibition",
-    "LAG-3":"Immune checkpoint — T-cell dysfunction",
-    "TP53":"Tumor suppressor — Most common cancer mutation",
-    "KRAS":"Proto-oncogene — Pancreatic, lung, CRC",
-    "VEGF":"Angiogenesis factor — Tumor vascularization",
-    "TRAC":"TCR alpha chain — CRISPR KO for allogeneic CAR-T",
-    "B2M":"Beta-2 microglobulin — Universal CAR-T",
-    "NY-ESO":"Cancer-testis antigen — Melanoma, sarcoma",
-    "MAGE":"Cancer-testis antigen — Multiple cancers",
-    "WT1":"Wilms tumor protein — Leukemia, solid tumors",
-    "EGFRvIII":"Mutant EGFR — Glioblastoma",
-    "GPC3":"Glypican-3 — HCC",
+    "CD19":"B-cell antigen - #1 CAR-T target (leukemia/lymphoma)",
+    "CD22":"B-cell antigen - ALL, DLBCL",
+    "CD20":"B-cell marker - NHL, CLL",
+    "CD33":"Myeloid antigen - AML",
+    "CD38":"Plasma cell - Multiple Myeloma",
+    "CD123":"IL-3Rα - AML, BPDCN",
+    "CD7":"T-cell antigen - T-ALL",
+    "CD30":"TNF receptor - Hodgkin lymphoma",
+    "BCMA":"B-cell maturation antigen - Multiple Myeloma",
+    "HER2":"Growth factor receptor - Breast, gastric cancer",
+    "EGFR":"Epidermal growth factor receptor - Lung, GBM",
+    "GD2":"Disialoganglioside - Neuroblastoma, melanoma",
+    "CEA":"Carcinoembryonic antigen - Colorectal, lung",
+    "AFP":"Alpha-fetoprotein - Hepatocellular carcinoma",
+    "GPC3":"Glypican-3 - Hepatocellular carcinoma",
+    "Mesothelin":"Glycoprotein - Mesothelioma, ovarian, lung",
+    "PSMA":"Prostate-specific membrane antigen - Prostate cancer",
+    "MUC1":"Mucin-1 - Breast, ovarian cancer",
+    "ROR1":"Receptor tyrosine kinase - CLL, ALL",
+    "FLT3":"Tyrosine kinase - AML",
+    "PD-1":"Immune checkpoint - T-cell exhaustion",
+    "PD-L1":"PD-1 ligand - Tumor immune evasion",
+    "CTLA-4":"Immune checkpoint - T-cell inhibition",
+    "LAG-3":"Immune checkpoint - T-cell dysfunction",
+    "TP53":"Tumor suppressor - Most common cancer mutation",
+    "KRAS":"Proto-oncogene - Pancreatic, lung, CRC",
+    "VEGF":"Angiogenesis factor - Tumor vascularization",
+    "TRAC":"TCR alpha chain - CRISPR KO for allogeneic CAR-T",
+    "B2M":"Beta-2 microglobulin - Universal CAR-T",
+    "NY-ESO":"Cancer-testis antigen - Melanoma, sarcoma",
+    "MAGE":"Cancer-testis antigen - Multiple cancers",
+    "WT1":"Wilms tumor protein - Leukemia, solid tumors",
+    "EGFRvIII":"Mutant EGFR - Glioblastoma",
+    "GPC3":"Glypican-3 - HCC",
 }
 
 THERAPY_PATTERNS = {
@@ -176,7 +176,7 @@ predictor_stats={
 }
 
 # ── Pre-generate AI analyses ──────────────────────────────────────────────
-# Called at build time — generates data-driven clinical analysis for every pair
+# Called at build time - generates data-driven clinical analysis for every pair
 
 TARGET_BIOLOGY = {
     "CD19": "a B-cell surface antigen and the primary CAR-T target for B-cell malignancies",
@@ -187,7 +187,7 @@ TARGET_BIOLOGY = {
     "PD-1": "the programmed death-1 checkpoint that suppresses T-cell activity in the tumor microenvironment",
     "PD-L1": "PD-1's tumor-expressed ligand that enables cancer cells to evade immune destruction",
     "KRAS": "the most frequently mutated oncogene in human cancer, historically undruggable",
-    "TP53": "the guardian of the genome — the most commonly mutated tumor suppressor across all cancer types",
+    "TP53": "the guardian of the genome - the most commonly mutated tumor suppressor across all cancer types",
     "GD2": "a disialoganglioside highly expressed on neuroblastoma and melanoma cells",
     "GPC3": "glypican-3, a proteoglycan highly specific to hepatocellular carcinoma",
     "Mesothelin": "a glycoprotein overexpressed in mesothelioma, ovarian, and lung cancers",
@@ -199,7 +199,7 @@ TARGET_BIOLOGY = {
 CANCER_BIOLOGY = {
     "Lymphoma": "B-cell and T-cell lymphomas express defined surface antigens (CD19, CD20, CD22) that make them ideal CAR-T targets. The disease is largely systemic, facilitating intravenous cell therapy delivery.",
     "Leukemia (ALL)": "Acute lymphoblastic leukemia is characterized by CD19/CD22 overexpression, making it the disease where CAR-T therapy achieved its first landmark clinical successes.",
-    "Leukemia (AML)": "AML presents unique targeting challenges — antigens like CD33 and FLT3 are also expressed on normal hematopoietic progenitors, raising on-target/off-tumor toxicity concerns.",
+    "Leukemia (AML)": "AML presents unique targeting challenges - antigens like CD33 and FLT3 are also expressed on normal hematopoietic progenitors, raising on-target/off-tumor toxicity concerns.",
     "Multiple Myeloma": "Multiple myeloma's reliance on BCMA expression has driven a wave of CAR-T and BiTE therapies, with two FDA-approved products (ide-cel, cilta-cel) already on the market.",
     "Lung Cancer": "NSCLC's heterogeneity and immunosuppressive tumor microenvironment present barriers for cell therapy. EGFR mutations provide a molecular handle but are present in only ~15% of Western cases.",
     "Breast Cancer": "HER2 amplification (~20% of cases) offers a targetable antigen, but the solid tumor microenvironment creates physical and immunological barriers for T-cell infiltration.",
@@ -260,7 +260,7 @@ def generate_analysis(ct_a, ct_b, da, db):
         bio_b = TARGET_BIOLOGY.get(main_b, f"a key antigen in {ct_b} immunotherapy")
         lines.append(f"\n{ct_b} trials focus on {', '.join(targets_b[:3])}, with {main_b} ({bio_b}) dominating. {CANCER_BIOLOGY.get(ct_b, 'The biology of this cancer type shapes its distinct therapeutic target landscape.')[:120]}")
     if shared:
-        lines.append(f"\nBoth cancers share interest in {', '.join(shared)} — reflecting either overlapping antigen expression or convergent immunotherapy strategies (particularly checkpoint blockade).")
+        lines.append(f"\nBoth cancers share interest in {', '.join(shared)} - reflecting either overlapping antigen expression or convergent immunotherapy strategies (particularly checkpoint blockade).")
     
     # Section 2: Clinical Pipeline Maturity
     lines.append("\n\n**2. Clinical Trial Pipeline Maturity**")
@@ -295,16 +295,16 @@ def generate_analysis(ct_a, ct_b, da, db):
     if p3_a < 5 and p3_b < 5:
         lines.append(f"Both {ct_a} and {ct_b} have very limited Phase III representation (<5%), indicating that gene-editing and cell therapy approaches remain largely investigational for both. The biggest opportunity is translating Phase I/II safety data into powered efficacy trials.")
     elif p3_a < 5:
-        lines.append(f"{ct_a} lacks Phase III trials despite {tot_a} total studies — suggesting a translational gap. Allogeneic 'off-the-shelf' approaches (NK cell, CRISPR-engineered CAR-T) may accelerate the path to pivotal trials by reducing manufacturing complexity.")
+        lines.append(f"{ct_a} lacks Phase III trials despite {tot_a} total studies - suggesting a translational gap. Allogeneic 'off-the-shelf' approaches (NK cell, CRISPR-engineered CAR-T) may accelerate the path to pivotal trials by reducing manufacturing complexity.")
     elif p3_b < 5:
-        lines.append(f"{ct_b} trails in late-stage development despite active Phase I/II research. Combination strategies — pairing cell therapy with checkpoint inhibition — represent an underexplored avenue that could improve response durability.")
+        lines.append(f"{ct_b} trails in late-stage development despite active Phase I/II research. Combination strategies - pairing cell therapy with checkpoint inhibition - represent an underexplored avenue that could improve response durability.")
     
     if cat_a == "Solid Tumor" and cat_b == "Hematologic":
         lines.append(f"\n{ct_a} as a solid tumor faces physical barriers (stromal exclusion, hypoxia, antigen heterogeneity) that {ct_b} largely avoids as a liquid malignancy. Engineered cytokine armoring and dual-target CAR constructs represent active research directions for {ct_a}.")
     
     # Section 5: Verdict
     lines.append("\n\n**5. Verdict**")
-    lines.append(f"**{more_mature}** has the more advanced gene-editing therapy pipeline: higher Phase III representation ({more_d.get('phase3_pct',0)}%), greater industry investment ({more_d.get('industry_pct',0)}%), and {more_d.get('total',0)} total trials representing years of accumulated clinical experience. {less_mature} is earlier in the translational curve — showing strong investigational activity but fewer pivotal trials. Both cancers are active frontiers, but {more_mature}'s higher completion rate ({(da if more_mature==ct_a else db).get('completion_rate',0)}%) and larger median enrollment suggest more refined protocols and better-defined patient populations.")
+    lines.append(f"**{more_mature}** has the more advanced gene-editing therapy pipeline: higher Phase III representation ({more_d.get('phase3_pct',0)}%), greater industry investment ({more_d.get('industry_pct',0)}%), and {more_d.get('total',0)} total trials representing years of accumulated clinical experience. {less_mature} is earlier in the translational curve - showing strong investigational activity but fewer pivotal trials. Both cancers are active frontiers, but {more_mature}'s higher completion rate ({(da if more_mature==ct_a else db).get('completion_rate',0)}%) and larger median enrollment suggest more refined protocols and better-defined patient populations.")
     
     return "\n".join(lines)
 
@@ -639,10 +639,10 @@ body.beginner-mode .bm-label-beg{display:inline!important}
   </div>
 </div>
 <div class="about">
-  <div class="about-item accent"><h4>What Is This?</h4><p>End-to-end analytics pipeline on <strong>3,494 real clinical trials</strong> from ClinicalTrials.gov spanning CRISPR, CAR-T, TCR, TIL, NK cell, gene therapy, oncolytic virus, and mRNA cancer treatments from 1990–2025.</p></div>
-  <div class="about-item"><h4>Why It Matters</h4><p>Gene-editing and cell therapy are the <strong>frontier of oncology</strong>. Understanding which molecular approaches advance through trials — and which fail — guides research investment and clinical strategy.</p></div>
+  <div class="about-item accent"><h4>What Is This?</h4><p>End-to-end analytics pipeline on <strong>3,494 real clinical trials</strong> from ClinicalTrials.gov spanning CRISPR, CAR-T, TCR, TIL, NK cell, gene therapy, oncolytic virus, and mRNA cancer treatments from 1990-2025.</p></div>
+  <div class="about-item"><h4>Why It Matters</h4><p>Gene-editing and cell therapy are the <strong>frontier of oncology</strong>. Understanding which molecular approaches advance through trials - and which fail - guides research investment and clinical strategy.</p></div>
   <div class="about-item"><h4>Statistical Findings</h4><p><strong>81.3% completion rate</strong>. Enrollment predicts success (r=0.48, p&lt;0.0001). Phase predicts outcome (χ²=22.9, p=0.002). 35+ protein targets extracted. 9 hypothesis tests across 3,494 trials.</p></div>
-  <div class="about-item"><h4>AI Analysis Layer</h4><p>Clinical AI analyses pre-generated for every cancer type comparison — covering molecular targets, pipeline maturity, research gaps, and pipeline verdicts. Plus an interactive trial outcome predictor.</p></div>
+  <div class="about-item"><h4>AI Analysis Layer</h4><p>Clinical AI analyses pre-generated for every cancer type comparison - covering molecular targets, pipeline maturity, research gaps, and pipeline verdicts. Plus an interactive trial outcome predictor.</p></div>
 </div>
 <div class="tabs">
   <div class="tab" onclick="show('about',this)">📖 About</div>
@@ -664,7 +664,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 
   <div class="about-hero">
     <h2>Gene-Editing &amp; Cell Therapy<br><span>Cancer Trials Analytics</span></h2>
-    <p>This project is an end-to-end data science pipeline built on <strong>4,460 real clinical trials</strong> from ClinicalTrials.gov spanning 1990–2025. It analyzes how scientists are using gene-editing tools — CRISPR, CAR-T cells, NK cells, oncolytic viruses — to fight cancer. The goal is to understand which approaches are working, which cancers are being neglected, and what predicts a trial's success.</p>
+    <p>This project is an end-to-end data science pipeline built on <strong>4,460 real clinical trials</strong> from ClinicalTrials.gov spanning 1990-2025. It analyzes how scientists are using gene-editing tools - CRISPR, CAR-T cells, NK cells, oncolytic viruses - to fight cancer. The goal is to understand which approaches are working, which cancers are being neglected, and what predicts a trial's success.</p>
     <div class="tag-row">
       <span class="atag">MS Analytics · Northeastern University</span>
       <span class="atag b">4,460 Clinical Trials</span>
@@ -677,7 +677,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
   </div>
 
   <!-- The Science -->
-  <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#7a9bbf;margin-bottom:13px">🔬 The Science — What Is Gene Editing?</div>
+  <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#7a9bbf;margin-bottom:13px">🔬 The Science - What Is Gene Editing?</div>
   <div class="science-grid" style="margin-bottom:22px">
     <div class="science-card" style="--sc:#00d4aa">
       <div class="sci-icon">✂️</div>
@@ -694,19 +694,19 @@ body.beginner-mode .bm-label-beg{display:inline!important}
     <div class="science-card" style="--sc:#8b5cf6">
       <div class="sci-icon">🔑</div>
       <h4>TCR Therapy</h4>
-      <p>Similar to CAR-T but uses T-cell receptors instead of artificial receptors. Can target proteins <em>inside</em> cancer cells — invisible to CAR-T — by recognizing peptide fragments on the cell surface.</p>
+      <p>Similar to CAR-T but uses T-cell receptors instead of artificial receptors. Can target proteins <em>inside</em> cancer cells - invisible to CAR-T - by recognizing peptide fragments on the cell surface.</p>
       <span class="sci-tag">Target: NY-ESO, MAGE, WT1</span>
     </div>
     <div class="science-card" style="--sc:#f59e0b">
       <div class="sci-icon">🌿</div>
       <h4>TIL Therapy</h4>
-      <p>Tumor-infiltrating lymphocytes — the immune cells already fighting cancer inside the tumor — are extracted, expanded 1,000× in a lab, and re-infused. Proven effective in melanoma.</p>
+      <p>Tumor-infiltrating lymphocytes - the immune cells already fighting cancer inside the tumor - are extracted, expanded 1,000× in a lab, and re-infused. Proven effective in melanoma.</p>
       <span class="sci-tag">First success: Melanoma (1988)</span>
     </div>
     <div class="science-card" style="--sc:#22c55e">
       <div class="sci-icon">⚡</div>
       <h4>NK Cell Therapy</h4>
-      <p>Natural Killer cells don't need to recognize a specific target to kill — they attack anything that looks "wrong." Unlike CAR-T, they can be used off-the-shelf from donors without immune rejection.</p>
+      <p>Natural Killer cells don't need to recognize a specific target to kill - they attack anything that looks "wrong." Unlike CAR-T, they can be used off-the-shelf from donors without immune rejection.</p>
       <span class="sci-tag">No MHC matching needed</span>
     </div>
     <div class="science-card" style="--sc:#ec4899">
@@ -737,7 +737,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
   <div class="grid2" style="margin-bottom:22px">
     <div class="card">
       <h3>Dataset at a Glance</h3>
-      <div class="srow"><span class="sl">Date Range</span><span class="sv">1990 – 2025</span></div>
+      <div class="srow"><span class="sl">Date Range</span><span class="sv">1990 - 2025</span></div>
       <div class="srow"><span class="sl">Total Trials</span><span class="sv">4,460</span></div>
       <div class="srow"><span class="sl">Completion Rate</span><span class="sv">81.1%</span></div>
       <div class="srow"><span class="sl">Median Enrollment</span><span class="sv">30 patients</span></div>
@@ -778,7 +778,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
       <div class="wt-icon">📈</div>
       <div>
         <div class="wt-title">Trial Analysis</div>
-        <div class="wt-desc">Temporal trends from 1995–2025 showing the explosive post-2015 growth. Completion rates by cancer type and phase. A phase pipeline funnel showing how trials progress from Early Phase I through Phase IV. Top countries by trial count with proportional bars.</div>
+        <div class="wt-desc">Temporal trends from 1995-2025 showing the explosive post-2015 growth. Completion rates by cancer type and phase. A phase pipeline funnel showing how trials progress from Early Phase I through Phase IV. Top countries by trial count with proportional bars.</div>
         <div class="wt-feats"><span class="wt-feat">Year trend</span><span class="wt-feat">Phase funnel</span><span class="wt-feat">Country map</span><span class="wt-feat">Completion by type</span></div>
       </div>
     </div>
@@ -787,7 +787,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
       <div class="wt-icon" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.25)">⚖</div>
       <div>
         <div class="wt-title">Compare + AI</div>
-        <div class="wt-desc">Select any two cancer types for a head-to-head comparison: trial counts, completion rates, median enrollment, Phase III %, industry sponsorship, top molecular targets, and growth trends. Click <strong style="color:#a78bfa">🔬 Clinical Analysis</strong> to get a pre-generated data-driven clinical interpretation covering biology, pipeline maturity, research gaps, and a verdict — built from real statistics at dashboard build time.</div>
+        <div class="wt-desc">Select any two cancer types for a head-to-head comparison: trial counts, completion rates, median enrollment, Phase III %, industry sponsorship, top molecular targets, and growth trends. Click <strong style="color:#a78bfa">🔬 Clinical Analysis</strong> to get a pre-generated data-driven clinical interpretation covering biology, pipeline maturity, research gaps, and a verdict - built from real statistics at dashboard build time.</div>
         <div class="wt-feats"><span class="wt-feat">6 metrics side-by-side</span><span class="wt-feat">Growth trend chart</span><span class="wt-feat">AI analysis</span><span class="wt-feat">Phase comparison</span></div>
       </div>
     </div>
@@ -814,7 +814,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
       <div class="wt-icon" style="background:rgba(74,158,255,.08);border-color:rgba(74,158,255,.2)">🔭</div>
       <div>
         <div class="wt-title">Discoveries</div>
-        <div class="wt-desc">5 original research findings computed from the data — not published elsewhere. Treatment Desert (investment vs mortality), Hematologic-Solid convergence trend, Enrollment tipping point (χ²=495, p≈0), Dual-target emergence (p=0.046), and Country therapy specialization fingerprints. Each finding includes statistical tests, charts, and a plain-English verdict.</div>
+        <div class="wt-desc">5 original research findings computed from the data - not published elsewhere. Treatment Desert (investment vs mortality), Hematologic-Solid convergence trend, Enrollment tipping point (χ²=495, p≈0), Dual-target emergence (p=0.046), and Country therapy specialization fingerprints. Each finding includes statistical tests, charts, and a plain-English verdict.</div>
         <div class="wt-feats"><span class="wt-feat">NCI mortality crossref</span><span class="wt-feat">Chi-square tests</span><span class="wt-feat">Linear regression</span><span class="wt-feat">CAGR analysis</span></div>
       </div>
     </div>
@@ -841,8 +841,8 @@ body.beginner-mode .bm-label-beg{display:inline!important}
       <div class="wt-icon" style="background:rgba(132,204,22,.08);border-color:rgba(132,204,22,.2)">📚</div>
       <div>
         <div class="wt-title">Publications</div>
-        <div class="wt-desc">PubMed publication counts by year (2013–2024) for CRISPR, CAR-T, Gene Therapy, TIL, NK Cell, Base Editing, and AI+CRISPR research. CRISPR grew from 3 papers (2013) to 1,288 (2024) — a 43,000% increase. Year-over-year growth rates show research momentum by modality.</div>
-        <div class="wt-feats"><span class="wt-feat">7 research streams</span><span class="wt-feat">2013–2024</span><span class="wt-feat">YoY growth</span></div>
+        <div class="wt-desc">PubMed publication counts by year (2013-2024) for CRISPR, CAR-T, Gene Therapy, TIL, NK Cell, Base Editing, and AI+CRISPR research. CRISPR grew from 3 papers (2013) to 1,288 (2024) - a 43,000% increase. Year-over-year growth rates show research momentum by modality.</div>
+        <div class="wt-feats"><span class="wt-feat">7 research streams</span><span class="wt-feat">2013-2024</span><span class="wt-feat">YoY growth</span></div>
       </div>
     </div>
 
@@ -850,7 +850,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
       <div class="wt-icon" style="background:rgba(20,184,166,.08);border-color:rgba(20,184,166,.2)">⚗️</div>
       <div>
         <div class="wt-title">3D Protein Viewer (separate page)</div>
-        <div class="wt-desc">Standalone <code style="background:#060d1a;padding:1px 5px;border-radius:3px;font-size:.72rem">molecules.html</code> — real crystal structures from RCSB PDB embedded offline. 10 protein targets rendered with Three.js WebGL: CD19, BCMA, HER2, EGFR, PD-1, KRAS, CD33, GPC3, Mesothelin, TP53. Three rendering modes: Ribbon (Cα backbone), Spheres, CPK. Side-by-side compare any two proteins. Load any custom PDB ID.</div>
+        <div class="wt-desc">Standalone <code style="background:#060d1a;padding:1px 5px;border-radius:3px;font-size:.72rem">molecules.html</code> - real crystal structures from RCSB PDB embedded offline. 10 protein targets rendered with Three.js WebGL: CD19, BCMA, HER2, EGFR, PD-1, KRAS, CD33, GPC3, Mesothelin, TP53. Three rendering modes: Ribbon (Cα backbone), Spheres, CPK. Side-by-side compare any two proteins. Load any custom PDB ID.</div>
         <div class="wt-feats"><span class="wt-feat">8,647 Cα atoms</span><span class="wt-feat">Ribbon/Spheres/CPK</span><span class="wt-feat">Side-by-side compare</span><span class="wt-feat">Works offline</span></div>
       </div>
     </div>
@@ -875,7 +875,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 <!-- OVERVIEW -->
 <div class="panel active" id="panel-overview">
   <div class="kpis" id="kpi-row"></div>
-  <div class="insight"><div class="insight-icon">🧬</div><div class="insight-text"><h4>Dataset Overview</h4><p>3,494 interventional trials (1990–2025). <strong>81.3% completion rate</strong> across 2,895 labeled trials. Lymphoma leads with 511 trials. Enrollment size is the strongest predictor of completion (r=0.48, p&lt;0.0001). 80+ countries represented.</p></div></div>
+  <div class="insight"><div class="insight-icon">🧬</div><div class="insight-text"><h4>Dataset Overview</h4><p>3,494 interventional trials (1990-2025). <strong>81.3% completion rate</strong> across 2,895 labeled trials. Lymphoma leads with 511 trials. Enrollment size is the strongest predictor of completion (r=0.48, p&lt;0.0001). 80+ countries represented.</p></div></div>
   <div class="grid2">
     <div class="card"><h3>Trial Status Distribution</h3><canvas id="c-status" height="260"></canvas></div>
     <div class="card"><h3>Top Cancer Types by Trial Count</h3><canvas id="c-cancer" height="260"></canvas></div>
@@ -901,21 +901,21 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 
 <!-- COMPARE + AI -->
 <div class="panel" id="panel-compare">
-  <div class="insight"><div class="insight-icon">⚖</div><div class="insight-text"><h4>Head-to-Head Comparison + Clinical AI Analysis</h4><p>Select two cancer types. The <strong>🔬 Clinical Analysis</strong> button shows a data-driven clinical interpretation covering molecular target biology, pipeline maturity, key differences, research gaps, and a verdict — generated from real trial statistics.</p></div></div>
+  <div class="insight"><div class="insight-icon">⚖</div><div class="insight-text"><h4>Head-to-Head Comparison + Clinical AI Analysis</h4><p>Select two cancer types. The <strong>🔬 Clinical Analysis</strong> button shows a data-driven clinical interpretation covering molecular target biology, pipeline maturity, key differences, research gaps, and a verdict - generated from real trial statistics.</p></div></div>
   <div class="compare-selectors">
     <div><label>Cancer Type A</label><select id="sel-a" onchange="runCompare()"></select></div>
     <div><label>Cancer Type B</label><select id="sel-b" onchange="runCompare()"></select></div>
     <button class="ai-btn" onclick="showAIAnalysis()">🔬 Clinical Analysis</button>
   </div>
   <div class="ai-analysis-box" id="ai-box">
-    <div class="ai-header">🔬 Clinical Analysis — <span id="ai-title"></span></div>
+    <div class="ai-header">🔬 Clinical Analysis - <span id="ai-title"></span></div>
     <div class="ai-content" id="ai-content"></div>
   </div>
   <div class="compare-grid" id="compare-cards"></div>
   <div class="compare-bars" id="compare-bars"></div>
   <div class="grid2">
     <div class="card"><h3>Phase Distribution</h3><canvas id="c-cmp-phase" height="220"></canvas></div>
-    <div class="card"><h3>Trial Growth 2010–2025</h3><canvas id="c-cmp-trend" height="220"></canvas></div>
+    <div class="card"><h3>Trial Growth 2010-2025</h3><canvas id="c-cmp-trend" height="220"></canvas></div>
   </div>
 </div>
 
@@ -933,7 +933,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 
 <!-- PREDICTOR -->
 <div class="panel" id="panel-predictor">
-  <div class="insight"><div class="insight-icon">🎯</div><div class="insight-text"><h4>Interactive Trial Outcome Predictor</h4><p>Enter trial parameters to estimate completion probability. Uses statistical relationships identified across 2,895 labeled trials — enrollment size (r=0.48), phase, sponsor type, and geography are the strongest predictors.</p></div></div>
+  <div class="insight"><div class="insight-icon">🎯</div><div class="insight-text"><h4>Interactive Trial Outcome Predictor</h4><p>Enter trial parameters to estimate completion probability. Uses statistical relationships identified across 2,895 labeled trials - enrollment size (r=0.48), phase, sponsor type, and geography are the strongest predictors.</p></div></div>
   <div class="card" style="margin-bottom:15px">
     <h3>Trial Parameters</h3>
     <div class="predictor-form">
@@ -966,12 +966,12 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 
 <!-- DISCOVERIES -->
 <div class="panel" id="panel-discoveries">
-  <div class="insight"><div class="insight-icon">🔭</div><div class="insight-text"><h4>5 Novel Research Findings</h4><p>Original analyses not published elsewhere — computed from 3,494 real trials. Run <code style="background:#0a1628;padding:1px 5px;border-radius:3px;font-size:.75rem">python3 new_findings.py</code> first to generate the data.</p></div></div>
+  <div class="insight"><div class="insight-icon">🔭</div><div class="insight-text"><h4>5 Novel Research Findings</h4><p>Original analyses not published elsewhere - computed from 3,494 real trials. Run <code style="background:#0a1628;padding:1px 5px;border-radius:3px;font-size:.75rem">python3 new_findings.py</code> first to generate the data.</p></div></div>
 
   <div class="finding-block" id="f1">
     <div class="finding-hd"><span class="finding-num">01</span><div><div class="finding-title">Treatment Desert Analysis</div><div class="finding-sub">Which cancers are criminally underserved by gene-editing research relative to their death toll?</div></div></div>
     <div class="grid2">
-      <div class="card"><h3>Investment Ratio — Trials per 10,000 Annual Deaths</h3><canvas id="c-desert" height="300"></canvas></div>
+      <div class="card"><h3>Investment Ratio - Trials per 10,000 Annual Deaths</h3><canvas id="c-desert" height="300"></canvas></div>
       <div class="card"><h3>Death Toll vs Trial Count</h3><canvas id="c-desert-scatter" height="300"></canvas></div>
     </div>
     <div class="finding-verdict" id="fv1"></div>
@@ -980,7 +980,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
   <div class="finding-block" id="f2">
     <div class="finding-hd"><span class="finding-num">02</span><div><div class="finding-title">Hematologic vs Solid Tumor Convergence</div><div class="finding-sub">Is the CAR-T efficacy gap between blood cancers and solid tumors closing over time?</div></div></div>
     <div class="grid2">
-      <div class="card"><h3>Completion Rate by Year — Blood vs Solid</h3><canvas id="c-conv" height="260"></canvas></div>
+      <div class="card"><h3>Completion Rate by Year - Blood vs Solid</h3><canvas id="c-conv" height="260"></canvas></div>
       <div class="card"><h3>Annual Gap (Hematologic% − Solid%)</h3><canvas id="c-gap" height="260"></canvas></div>
     </div>
     <div class="finding-verdict" id="fv2"></div>
@@ -998,7 +998,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
   <div class="finding-block" id="f4">
     <div class="finding-hd"><span class="finding-num">04</span><div><div class="finding-title">Dual-Target Strategy Emergence</div><div class="finding-sub">Are post-2020 trials increasingly targeting two proteins at once, proving the field is moving toward combination immunotherapy?</div></div></div>
     <div class="grid2">
-      <div class="card"><h3>% of Trials Targeting 2+ Proteins — Over Time</h3><canvas id="c-dual" height="260"></canvas></div>
+      <div class="card"><h3>% of Trials Targeting 2+ Proteins - Over Time</h3><canvas id="c-dual" height="260"></canvas></div>
       <div class="card"><h3>Most Common Target Pairs</h3><canvas id="c-pairs" height="260"></canvas></div>
     </div>
     <div class="finding-verdict" id="fv4"></div>
@@ -1039,7 +1039,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 
   <div class="finding-block" id="f9">
     <div class="finding-hd"><span class="finding-num">09</span><div><div class="finding-title">Therapy Survival Rankings</div><div class="finding-sub">Which cancer treatment approach has the highest rate of successfully completing trials?</div></div></div>
-    <div class="card" style="margin-bottom:15px"><h3>Completion Rate by Therapy Type — Ranked Best to Worst</h3><canvas id="c-therapy-rank" height="260"></canvas></div>
+    <div class="card" style="margin-bottom:15px"><h3>Completion Rate by Therapy Type - Ranked Best to Worst</h3><canvas id="c-therapy-rank" height="260"></canvas></div>
     <div class="finding-verdict" id="fv9"></div>
   </div>
 
@@ -1056,7 +1056,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 
 <!-- STATS -->
 <div class="panel" id="panel-stats">
-  <div class="insight"><div class="insight-icon">📊</div><div class="insight-text"><h4>What the Statistics Tell Us</h4><p>We ran 9 formal statistical tests to find what actually predicts a trial succeeding. <strong>5 came back with definitive answers.</strong> The biggest: <strong>larger trials complete more often</strong> (the more patients, the better). Trial phase matters too — Phase III trials don't finish as often as Phase I. Surprisingly, whether it's a blood cancer or solid tumor makes <em>no difference</em> in success rate.</p></div></div>
+  <div class="insight"><div class="insight-icon">📊</div><div class="insight-text"><h4>What the Statistics Tell Us</h4><p>We ran 9 formal statistical tests to find what actually predicts a trial succeeding. <strong>5 came back with definitive answers.</strong> The biggest: <strong>larger trials complete more often</strong> (the more patients, the better). Trial phase matters too - Phase III trials don't finish as often as Phase I. Surprisingly, whether it's a blood cancer or solid tumor makes <em>no difference</em> in success rate.</p></div></div>
   <div class="stat-grid" id="stat-cards"></div>
   <div class="grid2" style="margin-top:16px">
     <div class="card"><h3>−log₁₀(p-value)</h3><canvas id="c-pval" height="250"></canvas></div>
@@ -1066,9 +1066,9 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 
 <!-- ML -->
 <div class="panel" id="panel-ml">
-  <div class="insight"><div class="insight-icon">🤖</div><div class="insight-text"><h4>Can a Computer Predict Trial Success?</h4><p>We trained <strong>11 machine learning models</strong> to predict whether a cancer trial will succeed or fail, using features like cancer type, how many patients enrolled, trial phase, and who's funding it. <strong>The best model (Soft Voting Ensemble) correctly predicts outcomes 90% of the time</strong> — far better than random guessing. This confirms that trial success is not random: it follows patterns.</p></div></div>
+  <div class="insight"><div class="insight-icon">🤖</div><div class="insight-text"><h4>Can a Computer Predict Trial Success?</h4><p>We trained <strong>11 machine learning models</strong> to predict whether a cancer trial will succeed or fail, using features like cancer type, how many patients enrolled, trial phase, and who's funding it. <strong>The best model (Soft Voting Ensemble) correctly predicts outcomes 90% of the time</strong> - far better than random guessing. This confirms that trial success is not random: it follows patterns.</p></div></div>
   <div class="grid2" style="margin-bottom:15px">
-    <div class="card"><h3>AUC-ROC — All Models</h3><canvas id="c-models" height="270"></canvas></div>
+    <div class="card"><h3>AUC-ROC - All Models</h3><canvas id="c-models" height="270"></canvas></div>
     <div class="card"><h3>Accuracy vs AUC</h3><canvas id="c-scatter" height="270"></canvas></div>
   </div>
   <div class="card"><h3>Full Model Results</h3>
@@ -1079,7 +1079,7 @@ body.beginner-mode .bm-label-beg{display:inline!important}
 
 <!-- PUBS -->
 <div class="panel" id="panel-pubs">
-  <div class="insight"><div class="insight-icon">📚</div><div class="insight-text"><h4>The Research Explosion in Plain English</h4><p>In 2013, only <strong>3 scientific papers</strong> existed on using CRISPR to fight cancer. By 2024, there were <strong>1,288</strong> — a 43,000% explosion. CAR-T research also hit 1,022 papers in 2024. Publication volume is a leading indicator: when scientists write more papers about a therapy, clinical trials follow 2-3 years later. <strong>Watch AI+CRISPR</strong> — it's the fastest-growing research area right now.</p></div></div>
+  <div class="insight"><div class="insight-icon">📚</div><div class="insight-text"><h4>The Research Explosion in Plain English</h4><p>In 2013, only <strong>3 scientific papers</strong> existed on using CRISPR to fight cancer. By 2024, there were <strong>1,288</strong> - a 43,000% explosion. CAR-T research also hit 1,022 papers in 2024. Publication volume is a leading indicator: when scientists write more papers about a therapy, clinical trials follow 2-3 years later. <strong>Watch AI+CRISPR</strong> - it's the fastest-growing research area right now.</p></div></div>
   <div class="grid2">
     <div class="card"><h3>Publication Growth</h3><canvas id="c-pub" height="270"></canvas></div>
     <div class="card"><h3>Year-over-Year Growth Rate</h3><canvas id="c-yoy" height="270"></canvas></div>
@@ -1243,7 +1243,7 @@ function renderCompareCard(name,d,color){
     <div class="stat-row"><span class="sr-label">Successful</span><span class="sr-val" style="color:#22c55e">${d.success}</span></div>
     <div class="stat-row"><span class="sr-label">Terminated</span><span class="sr-val" style="color:#ef4444">${d.failure}</span></div>
     <div class="stat-row"><span class="sr-label">Phase III %</span><span class="sr-val">${d.phase3_pct}%</span></div>
-    <div class="stat-row"><span class="sr-label">Top Targets</span><span class="sr-val" style="color:#00d4aa;font-size:.68rem">${Object.keys(d.top_targets||{}).slice(0,4).join(', ')||'—'}</span></div>
+    <div class="stat-row"><span class="sr-label">Top Targets</span><span class="sr-val" style="color:#00d4aa;font-size:.68rem">${Object.keys(d.top_targets||{}).slice(0,4).join(', ')||'-'}</span></div>
   </div>`;
 }
 
@@ -1255,7 +1255,7 @@ function showAIAnalysis(){
   // Look up pre-generated analysis (try both key orders)
   const key1=`${a}|||${b}`,key2=`${b}|||${a}`;
   let text=D.ai_analyses[key1]||D.ai_analyses[key2];
-  if(!text){text=`**Analysis: ${a} vs ${b}**\n\nBoth cancer types are active areas of gene-editing and cell therapy research. Select different cancer types to see detailed comparisons — analyses are pre-generated for all top-15 cancer type pairs.`;}
+  if(!text){text=`**Analysis: ${a} vs ${b}**\n\nBoth cancer types are active areas of gene-editing and cell therapy research. Select different cancer types to see detailed comparisons - analyses are pre-generated for all top-15 cancer type pairs.`;}
   // Render with typewriter
   box.classList.add('visible');
   content.innerHTML='';
@@ -1272,10 +1272,10 @@ function showAIAnalysis(){
 function renderMol(){
   const mol=D.mol;
   const TCOL={'CAR-T':CYAN,'CRISPR':PURPLE,'TCR Therapy':BLUE,'TIL Therapy':GREEN,'NK Cell':ORANGE,'Oncolytic Virus':RED,'mRNA Therapy':PINK,'Gene Therapy':LIME};
-  const TDESC={'CAR-T':'T cells engineered with chimeric antigen receptors targeting cancer surface antigens. FDA-approved for B-cell malignancies and multiple myeloma.','CRISPR':'Cas9/Cas12 nuclease precisely cuts DNA — used to knock out immune checkpoints or engineer allogeneic "off-the-shelf" cell therapies.','TCR Therapy':'T cells with engineered T-cell receptors recognizing peptide-MHC complexes — can target intracellular antigens invisible to CAR-T.','TIL Therapy':'Tumor-infiltrating lymphocytes expanded ex vivo and re-infused. First proven in melanoma; expanding to cervical, lung, and GI cancers.','NK Cell':'Natural killer cells — can kill without MHC matching, enabling true "off-the-shelf" therapy without GvHD risk.','Oncolytic Virus':'Viruses selectively lyse tumor cells while triggering immune activation — T-VEC FDA-approved for melanoma.','mRNA Therapy':'mRNA encoding tumor antigens for personalized cancer vaccines — leverages COVID-19 lipid nanoparticle platform.','Gene Therapy':'Viral (AAV, lentiviral) or non-viral delivery of corrective genes — includes suicide gene therapy and tumor suppressor restoration.'};
+  const TDESC={'CAR-T':'T cells engineered with chimeric antigen receptors targeting cancer surface antigens. FDA-approved for B-cell malignancies and multiple myeloma.','CRISPR':'Cas9/Cas12 nuclease precisely cuts DNA - used to knock out immune checkpoints or engineer allogeneic "off-the-shelf" cell therapies.','TCR Therapy':'T cells with engineered T-cell receptors recognizing peptide-MHC complexes - can target intracellular antigens invisible to CAR-T.','TIL Therapy':'Tumor-infiltrating lymphocytes expanded ex vivo and re-infused. First proven in melanoma; expanding to cervical, lung, and GI cancers.','NK Cell':'Natural killer cells - can kill without MHC matching, enabling true "off-the-shelf" therapy without GvHD risk.','Oncolytic Virus':'Viruses selectively lyse tumor cells while triggering immune activation - T-VEC FDA-approved for melanoma.','mRNA Therapy':'mRNA encoding tumor antigens for personalized cancer vaccines - leverages COVID-19 lipid nanoparticle platform.','Gene Therapy':'Viral (AAV, lentiviral) or non-viral delivery of corrective genes - includes suicide gene therapy and tumor suppressor restoration.'};
   document.getElementById('therapy-grid').innerHTML=Object.entries(mol.therapy_counts).sort((a,b)=>b[1]-a[1]).map(([t,n])=>{
     const comp=mol.therapy_comp_rates[t],tgts=mol.therapy_top_targets[t],col=TCOL[t]||MUTED;
-    return `<div class="therapy-card" style="--tc:${col}"><div class="th-name">${t}</div><div class="th-count">${n.toLocaleString()} trials</div><div class="th-rate" style="color:${col}">${comp?comp.rate+'% completion':'—'}</div><div class="th-desc">${TDESC[t]||''}</div>${tgts?`<div class="th-targets">🎯 ${Object.keys(tgts).map(x=>`<span>${x}</span>`).join('')}</div>`:''}</div>`;}).join('');
+    return `<div class="therapy-card" style="--tc:${col}"><div class="th-name">${t}</div><div class="th-count">${n.toLocaleString()} trials</div><div class="th-rate" style="color:${col}">${comp?comp.rate+'% completion':'-'}</div><div class="th-desc">${TDESC[t]||''}</div>${tgts?`<div class="th-targets">🎯 ${Object.keys(tgts).map(x=>`<span>${x}</span>`).join('')}</div>`:''}</div>`;}).join('');
   const maxC=mol.top_targets[0]?mol.top_targets[0][1]:1;
   document.getElementById('target-grid').innerHTML=mol.top_targets.map(([t,c],i)=>`<div class="mol-target-card"><div class="tc-name">${t}</div><div class="tc-count">${c} trials · #${i+1}</div><div class="tc-desc">${mol.target_descriptions[t]||''}</div><div class="tc-bar"><div class="tc-bar-fill" style="width:${Math.round(c/maxC*100)}%"></div></div></div>`).join('');
   const top15=mol.top_targets.slice(0,15);
@@ -1414,7 +1414,7 @@ function _renderDiscoveries(){
 
     const ud=F.treatment_desert;
     document.getElementById('fv1').className='finding-verdict visible';
-    document.getElementById('fv1').innerHTML=`🔍 <strong>Key Finding:</strong> ${ud.key_insight}. The most underserved cancers — <strong>${ud.most_underserved.join(', ')}</strong> — receive dramatically fewer gene-editing trials relative to their annual death toll compared to <strong>${ud.best_resourced[0]}</strong>. This reveals a major research investment gap that does not align with cancer burden.`;
+    document.getElementById('fv1').innerHTML=`🔍 <strong>Key Finding:</strong> ${ud.key_insight}. The most underserved cancers - <strong>${ud.most_underserved.join(', ')}</strong> - receive dramatically fewer gene-editing trials relative to their annual death toll compared to <strong>${ud.best_resourced[0]}</strong>. This reveals a major research investment gap that does not align with cancer burden.`;
   }
 
   // ── Finding 2: Convergence ───────────────────────────────────────────────
@@ -1460,7 +1460,7 @@ function _renderDiscoveries(){
     }
 
     document.getElementById('fv2').className='finding-verdict visible';
-    document.getElementById('fv2').innerHTML=`🔍 <strong>Key Finding:</strong> ${conv.key_insight}. Direction: <strong style="color:${gapColor}">${conv.trend_direction}</strong> at ${Math.abs(conv.trend_slope).toFixed(3)} pp/year (R²=${conv.trend_r2}, p=${conv.trend_p}). ${conv.significant?'<strong style="color:#22c55e">Statistically significant (α=0.05).</strong>':'Not yet statistically significant — more years of data needed.'}`;
+    document.getElementById('fv2').innerHTML=`🔍 <strong>Key Finding:</strong> ${conv.key_insight}. Direction: <strong style="color:${gapColor}">${conv.trend_direction}</strong> at ${Math.abs(conv.trend_slope).toFixed(3)} pp/year (R²=${conv.trend_r2}, p=${conv.trend_p}). ${conv.significant?'<strong style="color:#22c55e">Statistically significant (α=0.05).</strong>':'Not yet statistically significant - more years of data needed.'}`;
   }
 
   // ── Finding 3: Tipping Point ─────────────────────────────────────────────
@@ -1504,7 +1504,7 @@ function _renderDiscoveries(){
     }
 
     document.getElementById('fv4').className='finding-verdict visible';
-    document.getElementById('fv4').innerHTML=`🔍 <strong>Key Finding:</strong> ${dt.key_insight||`Multi-target trials grew from ${dt.early_pct?.toFixed(1)}% to ${dt.late_pct?.toFixed(1)}%`}. <strong>Trend slope: ${dt.trend_slope>0?'+':''}${dt.trend_slope} pp/yr</strong> (R²=${dt.trend_r2}, p=${dt.trend_p}). The most common combination is CD19+CD22 — targeting two antigens simultaneously reduces the risk of antigen escape, a major cause of CAR-T relapse.`;
+    document.getElementById('fv4').innerHTML=`🔍 <strong>Key Finding:</strong> ${dt.key_insight||`Multi-target trials grew from ${dt.early_pct?.toFixed(1)}% to ${dt.late_pct?.toFixed(1)}%`}. <strong>Trend slope: ${dt.trend_slope>0?'+':''}${dt.trend_slope} pp/yr</strong> (R²=${dt.trend_r2}, p=${dt.trend_p}). The most common combination is CD19+CD22 - targeting two antigens simultaneously reduces the risk of antigen escape, a major cause of CAR-T relapse.`;
   }
 
   // ── Finding 5: Country Specialization ───────────────────────────────────
@@ -1522,7 +1522,7 @@ function _renderDiscoveries(){
     );
     const topSpecializations=countries.map(c=>`${c}: <strong style="color:${TCOL[spec[c]?.top_therapy]||CYAN}">${spec[c]?.top_therapy}</strong> (${spec[c]?.top_pct}%)`).join(' &nbsp;·&nbsp; ');
     document.getElementById('fv5').className='finding-verdict visible';
-    document.getElementById('fv5').innerHTML=`🔍 <strong>Key Finding:</strong> ${F.country_spec.key_insight||'Countries show distinct therapy specializations'}. ${topSpecializations}. Geographic specialization reflects national regulatory frameworks, academic expertise, and manufacturing capacity — China's dominance in CRISPR trials reflects both its less restrictive regulatory environment and massive academic investment since 2015.`;
+    document.getElementById('fv5').innerHTML=`🔍 <strong>Key Finding:</strong> ${F.country_spec.key_insight||'Countries show distinct therapy specializations'}. ${topSpecializations}. Geographic specialization reflects national regulatory frameworks, academic expertise, and manufacturing capacity - China's dominance in CRISPR trials reflects both its less restrictive regulatory environment and massive academic investment since 2015.`;
   }
 
   // ── Finding 6: Phase Attrition ───────────────────────────────────────────

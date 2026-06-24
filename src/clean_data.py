@@ -1,13 +1,13 @@
 """
-clean_data.py v2 — Expanded cancer type classifier
+clean_data.py v2 - Expanded cancer type classifier
 Key improvements:
-  - 50+ cancer type patterns (was 24) — recovers most "Unclassified" trials
+  - 50+ cancer type patterns (was 24) - recovers most "Unclassified" trials
   - New types: Sarcoma, Thyroid, Esophageal, Gastric, Nasopharyngeal,
                Neuroblastoma, Mesothelioma, Endometrial, Testicular,
                Neuroendocrine, Skin/SCC, Medulloblastoma, Ewing Sarcoma,
                Wilms Tumor, Retinoblastoma, and broader "Other Solid"
   - "Other Cancer" bucket catches anything with cancer keywords
-  - Enrollment cap raised to 20,000 (was 10,000) — keep large trials
+  - Enrollment cap raised to 20,000 (was 10,000) - keep large trials
   - Duration cap raised to 480 months (was 360)
 
 Usage: python3 clean_data.py
@@ -98,47 +98,47 @@ print(df["phase_clean"].value_counts().head(10).to_string())
 
 # ── Step 7: EXPANDED cancer type classifier ───────────────────────────────
 CANCER_PATTERNS = {
-    # Hematologic — specific
+    # Hematologic - specific
     "Leukemia (AML)":           r"\baml\b|acute myeloid|acute myelogenous",
     "Leukemia (ALL)":           r"\ball\b|acute lympho",
     "Leukemia (CLL/CML)":       r"\bcll\b|\bcml\b|chronic lympho|chronic myelo",
     "Lymphoma":                 r"lymphoma|dlbcl|hodgkin|non.hodgkin|mantle cell|follicular lymph|burkitt",
     "Multiple Myeloma":         r"myeloma|plasma cell neoplasm",
     "Hematologic (General)":    r"hematolog|blood cancer|bone marrow|myelodysplastic|\bMDS\b|aplastic anemia",
-    # Solid — CNS
+    # Solid - CNS
     "Brain/CNS":                r"brain|gliom|glioblas|\bGBM\b|\bcns\b|central nervous|meningioma|medulloblastoma|ependymoma",
     "Neuroblastoma":            r"neuroblastoma",
-    # Solid — Thoracic
+    # Solid - Thoracic
     "Lung Cancer":              r"lung|nsclc|sclc|pulmonary carcinoma|bronch",
     "Mesothelioma":             r"mesothelioma",
-    # Solid — GI
+    # Solid - GI
     "Colorectal Cancer":        r"colorect|colon|rectal|rectum",
     "Gastric Cancer":           r"gastric|stomach",
     "Esophageal Cancer":        r"esophag|oesophag",
     "Pancreatic Cancer":        r"pancrea",
     "Liver Cancer":             r"liver|hepato|hcc|hepatocellular",
-    # Solid — GYN
+    # Solid - GYN
     "Breast Cancer":            r"breast",
     "Ovarian Cancer":           r"ovar",
     "Cervical Cancer":          r"cervical|cervix|hpv",
     "Endometrial Cancer":       r"endometri|uterine",
-    # Solid — Urologic
+    # Solid - Urologic
     "Bladder Cancer":           r"bladder|urothelial",
     "Prostate Cancer":          r"prostate",
     "Renal/Kidney":             r"\brenal\b|kidney|clear cell carcinoma|wilms",
     "Testicular Cancer":        r"testicular|germ cell|seminoma",
-    # Solid — Skin
+    # Solid - Skin
     "Melanoma":                 r"melanoma",
     "Skin Cancer (Non-Melanoma)": r"\bscc\b|squamous cell skin|basal cell|merkel|cutaneous",
-    # Solid — Head & Neck
+    # Solid - Head & Neck
     "Head & Neck":              r"head.*neck|oral cavity|pharyn|laryn|nasopharyn|salivary",
-    # Solid — Sarcoma
+    # Solid - Sarcoma
     "Sarcoma":                  r"sarcoma|osteosarcoma|rhabdomyo|ewing|liposarcoma|leiomyosarcoma",
-    # Solid — Other specific
+    # Solid - Other specific
     "Thyroid Cancer":           r"thyroid",
     "Neuroendocrine":           r"neuroendocrine|carcinoid|pheochromocytoma",
     "Retinoblastoma":           r"retinoblastoma",
-    # Solid — broad
+    # Solid - broad
     "Solid Tumors (Multiple)":  r"solid tumor|advanced cancer|multiple.*tumor|various.*cancer|pan.cancer|unresectable|metastatic solid",
     # Broad matches
     "Prostate Cancer":          r"prostate",

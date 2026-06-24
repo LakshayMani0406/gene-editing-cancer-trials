@@ -1,5 +1,5 @@
 """
-leakage_audit.py — Standalone Registration-Time Leakage Audit
+leakage_audit.py - Standalone Registration-Time Leakage Audit
 
 Runs the same comparison as section 10 of ml_models.py, but as a clean
 standalone process that does NOT import XGBoost or LightGBM. This avoids
@@ -145,7 +145,7 @@ reg_aucs = run_feature_set(NUM_REG, "REG")
 # ── Comparison ──────────────────────────────────────────────────────────────
 print()
 print("=" * 70)
-print("  LEAKAGE AUDIT — SIDE BY SIDE")
+print("  LEAKAGE AUDIT - SIDE BY SIDE")
 print("=" * 70)
 print()
 print(f"  {'Model':<22} {'Full AUC':>10} {'Reg-only AUC':>14}  {'Δ AUC':>9}")
@@ -169,7 +169,7 @@ best_reg_name  = max(reg_aucs, key=reg_aucs.get)
 best_reg_auc   = reg_aucs[best_reg_name]
 drop = best_full_auc - best_reg_auc
 
-# Also note the global best — pull from model_results.json if present
+# Also note the global best - pull from model_results.json if present
 global_best_auc = best_full_auc
 global_best_name = best_full_name
 try:
@@ -198,7 +198,7 @@ elif (global_best_auc - best_reg_auc) > 0.03:
     print("    but registration-only features still hold useful signal.")
 else:
     print("  → Small AUC drop. Registration-time features alone carry most")
-    print("    of the predictive signal — leakage concern is limited here.")
+    print("    of the predictive signal - leakage concern is limited here.")
 print()
 
 # ── Save audit JSON ─────────────────────────────────────────────────────────

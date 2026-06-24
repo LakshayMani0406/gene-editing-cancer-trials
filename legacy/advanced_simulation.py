@@ -1,12 +1,12 @@
 """
-advanced_simulation.py — Step 9: Large-Scale Simulation & Statistical Validation
+advanced_simulation.py - Step 9: Large-Scale Simulation & Statistical Validation
 
 Four upgrades that make findings publishable-grade:
 
 1. BOOTSTRAP CONFIDENCE INTERVALS (10,000 iterations)
    Every finding from new_findings.py gets a 95% CI.
    "Enrollment tipping point = 32.3pp" becomes
-   "32.3pp [29.1, 35.8] 95% CI" — actually publishable.
+   "32.3pp [29.1, 35.8] 95% CI" - actually publishable.
 
 2. MOLECULAR SIMULATION AT SCALE (50,000 probes × 3 probe types)
    Fixes the all-100/100 druggability bug.
@@ -55,7 +55,7 @@ results = {}
 # 1. BOOTSTRAP CONFIDENCE INTERVALS (10,000 iterations)
 # ═══════════════════════════════════════════════════════════════════════════
 print("─" * 70)
-print("1. Bootstrap CI (10,000 iterations) — Making findings publishable")
+print("1. Bootstrap CI (10,000 iterations) - Making findings publishable")
 print("─" * 70)
 
 np.random.seed(42)
@@ -174,14 +174,14 @@ if "start_year" in df.columns:
 results["bootstrap"] = {
     "n_iterations": N_BOOT,
     "findings": bootstrap_results,
-    "key_finding": f"10,000-run bootstrap validates all key findings with 95% CIs. Enrollment tipping point: +{bootstrap_results['enrollment_tipping']['difference']}pp [{bootstrap_results['enrollment_tipping']['diff_ci_95'][0]}, {bootstrap_results['enrollment_tipping']['diff_ci_95'][1]}]. All CIs exclude zero — findings are statistically robust."
+    "key_finding": f"10,000-run bootstrap validates all key findings with 95% CIs. Enrollment tipping point: +{bootstrap_results['enrollment_tipping']['difference']}pp [{bootstrap_results['enrollment_tipping']['diff_ci_95'][0]}, {bootstrap_results['enrollment_tipping']['diff_ci_95'][1]}]. All CIs exclude zero - findings are statistically robust."
 }
 
 # ═══════════════════════════════════════════════════════════════════════════
 # 2. MOLECULAR SIMULATION AT SCALE (50,000 probes × 3 probe types)
 # ═══════════════════════════════════════════════════════════════════════════
 print("\n" + "─" * 70)
-print("2. Molecular Simulation — 50,000 probes × 3 probe types (fixes all-100 bug)")
+print("2. Molecular Simulation - 50,000 probes × 3 probe types (fixes all-100 bug)")
 print("─" * 70)
 
 PROTEINS_PDB = {
@@ -268,7 +268,7 @@ def simulate_binding(ca_xyz, probe_type, n_probes=50_000, seed=42):
             pocket_neighbors = np.sum((dists >= 4) & (dists <= 12))
             pocket_scores.append(pocket_neighbors)
 
-    # Phase 2: Simulated annealing (40% — refine around best positions)
+    # Phase 2: Simulated annealing (40% - refine around best positions)
     if energies:
         best_e = min(energies)
         # Find approximate best position (recompute)
@@ -339,7 +339,7 @@ mol_results = {}
 N_PROBES = 50_000
 
 print(f"  Running {N_PROBES:,} probes × {len(PROBE_TYPES)} probe types × {len(PROTEINS_PDB)} proteins")
-print(f"  (This takes ~3-5 minutes — simulated annealing + pocket scoring)\n")
+print(f"  (This takes ~3-5 minutes - simulated annealing + pocket scoring)\n")
 
 for name, info in PROTEINS_PDB.items():
     print(f"  [{info['pdb']}] {name}...", end=" ", flush=True)
@@ -347,7 +347,7 @@ for name, info in PROTEINS_PDB.items():
     time.sleep(0.3)
 
     if not text:
-        print("download failed — skipping")
+        print("download failed - skipping")
         continue
 
     chains = parse_ca(text)
@@ -433,10 +433,10 @@ else:
     results["molecular"] = {"proteins": mol_results, "n_probes_per_protein": N_PROBES}
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 3. BOOTSTRAP ENSEMBLE ML (1,000 models — Bagging)
+# 3. BOOTSTRAP ENSEMBLE ML (1,000 models - Bagging)
 # ═══════════════════════════════════════════════════════════════════════════
 print("\n" + "─" * 70)
-print("3. Bootstrap Ensemble ML — 1,000 models, uncertainty quantification")
+print("3. Bootstrap Ensemble ML - 1,000 models, uncertainty quantification")
 print("─" * 70)
 
 # Build feature matrix
@@ -527,7 +527,7 @@ results["ensemble_ml"] = {
     "key_finding": (
         f"1,000-model bagging ensemble achieves AUC={ensemble_auc:.4f}. "
         f"Mean prediction uncertainty std={std_probs.mean():.4f}. "
-        f"{(std_probs > 0.15).sum()} trials have wide 95% CIs (std>15pp) — "
+        f"{(std_probs > 0.15).sum()} trials have wide 95% CIs (std>15pp) - "
         f"these are genuinely ambiguous trials where even 1,000 models disagree."
     )
 }
@@ -536,7 +536,7 @@ results["ensemble_ml"] = {
 # 4. PERMUTATION TESTS (10,000 shuffles)
 # ═══════════════════════════════════════════════════════════════════════════
 print("\n" + "─" * 70)
-print("4. Permutation Tests — 10,000 shuffles per finding")
+print("4. Permutation Tests - 10,000 shuffles per finding")
 print("─" * 70)
 
 N_PERM = 10_000
@@ -626,6 +626,6 @@ print("=" * 70)
 print(f"\n  1. BOOTSTRAP ({N_BOOT:,} iter):  Enrollment gap = +{bootstrap_results['enrollment_tipping']['difference']}pp  95%CI [{bootstrap_results['enrollment_tipping']['diff_ci_95'][0]}, {bootstrap_results['enrollment_tipping']['diff_ci_95'][1]}]")
 print(f"  2. MOLECULAR  ({N_PROBES:,} probes): Differentiated druggability scores (not all 100)")
 print(f"  3. ENSEMBLE   ({N_EST:,} models):  AUC={ensemble_auc:.4f}, uncertainty quantified per trial")
-print(f"  4. PERMUTATION ({N_PERM:,} shuffle): p={perm_results['enrollment_tipping']['permutation_p']:.5f} — findings are real signal")
+print(f"  4. PERMUTATION ({N_PERM:,} shuffle): p={perm_results['enrollment_tipping']['permutation_p']:.5f} - findings are real signal")
 print(f"\n  This is publishable-grade validation.")
 print(f"  Next: python3 dashboard.py  (adds CIs + uncertainty to all visualizations)")

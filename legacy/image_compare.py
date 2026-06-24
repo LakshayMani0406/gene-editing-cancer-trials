@@ -1,5 +1,5 @@
 """
-image_compare.py — Biomarker Image Analysis System
+image_compare.py - Biomarker Image Analysis System
 Pharma-grade UI: clinical trial management aesthetic
 All three modes: Single / Comparison / Cancer Type Match
 """
@@ -47,7 +47,7 @@ PAGE = r"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BioMarker Vision — Oncology Target Analysis</title>
+<title>BioMarker Vision - Oncology Target Analysis</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 

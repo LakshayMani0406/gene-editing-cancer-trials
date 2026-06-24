@@ -1,5 +1,5 @@
 """
-patch_theme.py — Apply unified pharma clinical white theme to all 3 pages
+patch_theme.py - Apply unified pharma clinical white theme to all 3 pages
 Run from git2/:  python3 patch_theme.py
 
 Also re-applies the nav bar (removes old one first).
@@ -58,7 +58,7 @@ PHARMA_ADD = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 html,body{font-family:'Inter',system-ui,-apple-system,sans-serif!important;-webkit-font-smoothing:antialiased;}
 
-/* Headers stay dark navy — intentional */
+/* Headers stay dark navy - intentional */
 .hero,.hdr,.hdr-row,.main-header{
   background:linear-gradient(135deg,#0f2044 0%,#162a52 60%,#1e3a6e 100%)!important;
   border-bottom:2px solid #2563eb!important;
@@ -80,11 +80,11 @@ html,body{font-family:'Inter',system-ui,-apple-system,sans-serif!important;-webk
 .pb{background:rgba(37,99,235,.15)!important;border-color:rgba(96,165,250,.3)!important;color:#93c5fd!important}
 .ss{color:#93c5fd!important}
 
-/* Main content area — white clinical */
+/* Main content area - white clinical */
 .main,#main,.tab-content,.results-area,.results-wrap,.main-wrap,
 .page>.main,.layout>.main{background:#f1f5f9!important}
 
-/* Tab nav — white bar */
+/* Tab nav - white bar */
 .tab-nav,.tabnav,.mode-bar{
   background:#ffffff!important;
   border-bottom:1px solid #e2e8f0!important;
@@ -94,7 +94,7 @@ html,body{font-family:'Inter',system-ui,-apple-system,sans-serif!important;-webk
 .tab-btn.active,.tab-btn:hover,.mtab.on,.ntab.on,.mode-tab.on{
   color:#1d4ed8!important;border-bottom-color:#1d4ed8!important}
 
-/* Cards — white with clean borders */
+/* Cards - white with clean borders */
 .card,.insight-card,.insight-box,.pc,.res-panel,.upload-panel,
 .detail-card,.dc,.exp-box,.analysis-box,.diff-section,.action-bar,
 .action-row,.summary-row,.empty-state,.stat-box{
@@ -208,7 +208,7 @@ print("""
 Done. Hard-refresh all tabs (Cmd+Shift+R).
 
 Theme: Clinical white body + dark navy headers + white cards
-Nav: sticky bar top of every page — active page highlighted
+Nav: sticky bar top of every page - active page highlighted
 
 Now test every feature:
   http://localhost:8080/dashboard.html

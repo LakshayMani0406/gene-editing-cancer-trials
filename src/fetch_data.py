@@ -1,5 +1,5 @@
 """
-fetch_data.py v2 — Expanded fetch targeting 10,000+ unique trials
+fetch_data.py v2 - Expanded fetch targeting 10,000+ unique trials
 28 search queries, 1000/query, deduplicated by NCT ID.
 
 New queries added:
@@ -27,7 +27,7 @@ CT_FIELDS = ",".join([
     "WhyStopped","HasResults","ResultsFirstPostDate",
 ])
 
-# 28 queries — covers the full gene/cell therapy in cancer landscape
+# 28 queries - covers the full gene/cell therapy in cancer landscape
 QUERIES = [
     # Core cell therapies
     "CRISPR cancer",

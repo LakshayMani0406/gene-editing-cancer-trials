@@ -52,10 +52,10 @@ def save(path):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Figure 1 — Trial Landscape
+# Figure 1 - Trial Landscape
 # ─────────────────────────────────────────────────────────────────────────────
 fig, axes = plt.subplots(2, 2, figsize=(16, 12))
-fig.suptitle("CRISPR Cancer Trials — Landscape  (ClinicalTrials.gov)",
+fig.suptitle("CRISPR Cancer Trials - Landscape  (ClinicalTrials.gov)",
              fontsize=14, color="white", y=1.01)
 
 # 1a. Status pie
@@ -118,7 +118,7 @@ save("outputs/fig1_trial_landscape.png")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Figure 2 — Temporal
+# Figure 2 - Temporal
 # ─────────────────────────────────────────────────────────────────────────────
 fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 fig.suptitle("CRISPR Cancer Research Trends Over Time", fontsize=14, color="white")
@@ -172,7 +172,7 @@ save("outputs/fig2_temporal.png")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Figure 3 — Feature Distributions
+# Figure 3 - Feature Distributions
 # ─────────────────────────────────────────────────────────────────────────────
 fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 fig.suptitle("Feature Distributions", fontsize=14, color="white")

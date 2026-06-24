@@ -1,19 +1,19 @@
 """
-trial_embeddings.py — EfficientNet-Inspired Deep Analysis for Cancer Trials
+trial_embeddings.py - EfficientNet-Inspired Deep Analysis for Cancer Trials
 
 Adapts 4 techniques from the bird classification project:
 
 1. TRIAL EMBEDDINGS (like image feature vectors)
    Encodes each trial as a dense numeric vector using an autoencoder.
    Result: every trial has a learned representation capturing its essential
-   characteristics — just like EfficientNetB3 creates a 1536-dim image embedding.
+   characteristics - just like EfficientNetB3 creates a 1536-dim image embedding.
 
 2. t-SNE VISUALIZATION (like the 84K image embedding map)
    Projects all 4,460 trial embeddings to 2D.
    Reveals natural clusters: do blood cancer trials cluster separately from solid?
    Does industry vs academic form distinct islands?
 
-3. COSINE SIMILARITY — SIMILAR TRIAL FINDER (like similar species search)
+3. COSINE SIMILARITY - SIMILAR TRIAL FINDER (like similar species search)
    Given any trial design, find the 10 most similar SUCCESSFUL trials.
    Practical tool for researchers: "What worked before for trials like mine?"
 
@@ -282,7 +282,7 @@ try:
     classifier_type = "PyTorch Two-Phase"
 
 except ImportError:
-    print("  PyTorch not available — using PCA embeddings instead")
+    print("  PyTorch not available - using PCA embeddings instead")
     TORCH_OK = False
     pca = PCA(n_components=6, random_state=42)
     Z_all = pca.fit_transform(X_all)
@@ -322,9 +322,9 @@ for i in sample_idx:
 
 print(f"  t-SNE points for dashboard: {len(tsne_points):,}")
 
-# ── 4. COSINE SIMILARITY — SIMILAR TRIAL FINDER ──────────────────────────────
+# ── 4. COSINE SIMILARITY - SIMILAR TRIAL FINDER ──────────────────────────────
 print("\n" + "─" * 70)
-print("Step 3: Cosine Similarity — Similar Trial Finder")
+print("Step 3: Cosine Similarity - Similar Trial Finder")
 print("─" * 70)
 
 # Only among labeled trials (we know outcomes)
@@ -462,7 +462,7 @@ results = {
             f"Cosine similarity on trial embeddings (adapted from bird species similarity search): "
             f"Cancers with many successful templates ({top_findable[0][0]}, {top_findable[1][0]}) "
             f"have high similarity scores ({top_findable[0][1]:.3f}, {top_findable[1][1]:.3f}), "
-            f"while treatment deserts ({bottom_findable[0][0]}) score only {bottom_findable[0][1]:.3f} — "
+            f"while treatment deserts ({bottom_findable[0][0]}) score only {bottom_findable[0][1]:.3f} - "
             f"meaning researchers designing trials for these cancers have very few proven templates to follow."
         ),
     },
@@ -495,6 +495,6 @@ for ct, sc in bottom_findable[:3]:
     print(f"    {ct}: {sc:.3f}")
 
 print(f"\n  NOVEL FINDING: The 'treatment desert' is also a 'template desert'.")
-print(f"  Pancreatic cancer and other underserved cancers don't just lack trials —")
+print(f"  Pancreatic cancer and other underserved cancers don't just lack trials -")
 print(f"  they lack proven trial designs that researchers can build on.")
 print(f"\n  Next: python3 dashboard.py  (adds t-SNE + Similarity tabs)")

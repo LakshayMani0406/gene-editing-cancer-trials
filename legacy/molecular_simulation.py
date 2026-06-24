@@ -1,5 +1,5 @@
 """
-molecular_simulation.py — Deep Molecular Analysis
+molecular_simulation.py - Deep Molecular Analysis
 
 Three computational analyses on real PDB crystal structures:
 
@@ -9,7 +9,7 @@ ANALYSIS A: Secondary Structure Prediction
   Outputs helix%, sheet%, coil% for each protein target.
 
 ANALYSIS B: Druggability & Binding Site Simulation
-  Estimates "pocket depth" using spatial neighbor density — residues buried
+  Estimates "pocket depth" using spatial neighbor density - residues buried
   in concave pockets have many medium-range neighbors. Runs 5,000-point
   random search with simplified Lennard-Jones energy function to locate
   the top binding sites for each protein.
@@ -21,9 +21,9 @@ ANALYSIS C: Druggability-Trials Correlation
   This explains WHY some cancers are treatment deserts at the molecular level.
 
 New Finding:
-  CD19, BCMA, HER2 → High druggability → Many trials (50–592)
+  CD19, BCMA, HER2 → High druggability → Many trials (50-592)
   KRAS, TP53       → Low druggability → Few trials (famously "undruggable")
-  The 79× trial gap is not just a funding decision — it's molecular geometry.
+  The 79× trial gap is not just a funding decision - it's molecular geometry.
 
 Output: outputs/molecular_insights.json
 """
@@ -51,7 +51,7 @@ PROTEINS = {
 }
 
 print("=" * 70)
-print("MOLECULAR SIMULATION — Gene-Editing Cancer Targets")
+print("MOLECULAR SIMULATION - Gene-Editing Cancer Targets")
 print("=" * 70)
 print(f"Proteins: {len(PROTEINS)}  |  Analyses: Secondary Structure + Binding Sites + Druggability\n")
 
@@ -162,7 +162,7 @@ def compute_pocket_scores(ca_xyz, inner_r=6.0, outer_r=14.0):
     """
     Pocket score for each residue.
     Residues in deep pockets have many neighbors in the medium-distance shell (6-14Å)
-    but few very close neighbors (<6Å — those are sequential in chain).
+    but few very close neighbors (<6Å - those are sequential in chain).
     High score = buried in pocket = potential drug binding site.
     """
     n = len(ca_xyz)
@@ -354,11 +354,11 @@ for name, info in PROTEINS.items():
 
     # Classify druggability
     if drug_score >= 65:
-        drug_class = "HIGH — Deep, accessible binding pocket"
+        drug_class = "HIGH - Deep, accessible binding pocket"
     elif drug_score >= 40:
-        drug_class = "MODERATE — Partial pocket, targetable"
+        drug_class = "MODERATE - Partial pocket, targetable"
     else:
-        drug_class = "LOW — Flat surface, historically challenging"
+        drug_class = "LOW - Flat surface, historically challenging"
 
     insights[name] = {
         "pdb_id":        info["pdb"],
@@ -397,11 +397,11 @@ if len(pairs) >= 4:
     trial_counts = [p[1] for p in pairs]
     try:
         if len(set(drug_scores)) < 2:
-            raise ValueError("All druggability scores identical — using fallback")
+            raise ValueError("All druggability scores identical - using fallback")
         r, p_val = sp_stats.pearsonr(drug_scores, trial_counts)
         slope, intercept, _, _, _ = sp_stats.linregress(drug_scores, trial_counts)
     except Exception as e:
-        print(f"  Correlation note: {e} — using rank correlation")
+        print(f"  Correlation note: {e} - using rank correlation")
         r, p_val = sp_stats.spearmanr(drug_scores, trial_counts)
         slope = float(np.polyfit(drug_scores, trial_counts, 1)[0]) if len(set(drug_scores)) >= 2 else 0.0
         intercept = 0.0
@@ -427,12 +427,12 @@ if len(pairs) >= 4:
             f"{'This confirms the structural basis for the treatment desert.' if p_val < 0.05 else 'Structural factors partially explain but do not fully determine trial investment.'}"
         ),
         "plain_english": (
-            f"We computed a 'druggability score' for each protein — measuring how accessible its "
+            f"We computed a 'druggability score' for each protein - measuring how accessible its "
             f"binding pocket is to drug molecules. The {'significant' if p_val < 0.05 else 'partial'} "
             f"correlation (r={r:.3f}) {'confirms' if p_val < 0.05 else 'suggests'} that proteins with "
             f"deeper, better-shaped pockets (like CD19, BCMA) attract far more clinical trials than "
             f"flat, hard-to-target proteins like KRAS and TP53. "
-            f"The 79× research gap between Leukemia and Pancreatic Cancer isn't just funding — "
+            f"The 79× research gap between Leukemia and Pancreatic Cancer isn't just funding - "
             f"KRAS, the main pancreatic cancer target, is geometrically {'nearly ' if drug_scores[drug_scores.index(min(drug_scores))] < 30 else ''}undruggable."
         )
     }

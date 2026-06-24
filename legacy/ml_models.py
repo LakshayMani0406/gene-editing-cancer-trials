@@ -58,27 +58,27 @@ from sklearn.metrics import (
 )
 from sklearn.inspection import permutation_importance
 
-# Optional imports — degrade gracefully if not installed
+# Optional imports - degrade gracefully if not installed
 try:
     from xgboost import XGBClassifier
     HAS_XGB = True
 except ImportError:
     HAS_XGB = False
-    print("  xgboost not found — skipping. Install: pip install xgboost")
+    print("  xgboost not found - skipping. Install: pip install xgboost")
 
 try:
     import lightgbm as lgb
     HAS_LGB = True
 except ImportError:
     HAS_LGB = False
-    print("  lightgbm not found — skipping. Install: pip install lightgbm")
+    print("  lightgbm not found - skipping. Install: pip install lightgbm")
 
 try:
     import shap
     HAS_SHAP = True
 except ImportError:
     HAS_SHAP = False
-    print("  shap not found — skipping. Install: pip install shap")
+    print("  shap not found - skipping. Install: pip install shap")
 
 Path("outputs").mkdir(exist_ok=True)
 
@@ -119,9 +119,9 @@ for c in ["is_hematologic","is_recent","log_enrollment",
         df[c] = df[c].fillna(df[c].median())
 
 # ── FEATURE SETS ─────────────────────────────────────────────────────────────
-# FULL: everything in the cleaned dataset — includes conduct-time features.
+# FULL: everything in the cleaned dataset - includes conduct-time features.
 #       Reported as the headline number but acknowledged as upward-biased.
-# REG:  registration-time only — features known when a trial is first
+# REG:  registration-time only - features known when a trial is first
 #       registered. No log_enrollment, no results_available.
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -130,22 +130,22 @@ CAT_OHE = [c for c in ["cancer_type","tumor_category",
                         "sponsor_class_clean","trial_era"] if c in df.columns]
 CAT_ORD = ["phase_clean"]
 
-# FULL feature set (current behaviour — used in section 2-9)
+# FULL feature set (current behaviour - used in section 2-9)
 NUM_FULL = [c for c in ["log_enrollment","start_year","n_countries",
                          "n_primary_outcomes","is_hematologic","is_recent",
                          "results_available"] if c in df.columns]
 
 # REGISTRATION-TIME feature set (used in section 10)
 # Drops:
-#   log_enrollment       — actual count is determined during trial conduct;
+#   log_enrollment       - actual count is determined during trial conduct;
 #                          terminated trials have small actuals → reverse causality
-#   results_available    — only true for trials that completed AND posted results
-#   n_countries          — sites can be added during conduct (borderline,
+#   results_available    - only true for trials that completed AND posted results
+#   n_countries          - sites can be added during conduct (borderline,
 #                          but we exclude to be conservative)
 NUM_REG = [c for c in ["start_year","n_primary_outcomes",
                         "is_hematologic","is_recent"] if c in df.columns]
 
-NUM = NUM_FULL  # default — section 2-9 uses the full feature set
+NUM = NUM_FULL  # default - section 2-9 uses the full feature set
 
 def build_preprocessor(num_cols, cat_ohe, cat_ord):
     return ColumnTransformer([
@@ -174,7 +174,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.20, stratify=y, random_state=42
 )
 print(f"Train: {len(X_train):,}  |  Test: {len(X_test):,}")
-print(f"Positive rate — Train: {y_train.mean():.1%}  |  Test: {y_test.mean():.1%}\n")
+print(f"Positive rate - Train: {y_train.mean():.1%}  |  Test: {y_test.mean():.1%}\n")
 
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
@@ -230,7 +230,7 @@ if HAS_LGB:
 # 3. Baseline cross-validation
 # ─────────────────────────────────────────────────────────────────────────────
 print("=" * 70)
-print("  BASELINE 5-FOLD CROSS-VALIDATION  (full feature set — includes conduct-time signal)")
+print("  BASELINE 5-FOLD CROSS-VALIDATION  (full feature set - includes conduct-time signal)")
 print("=" * 70)
 print(f"  {'Model':<28} {'Accuracy':>10} {'AUC-ROC':>10} {'F1':>10}  {'Time':>7}")
 print(f"  {'-'*28} {'-'*10} {'-'*10} {'-'*10}  {'-'*7}")
@@ -358,7 +358,7 @@ print(f"  features partly determined by trial conduct. See section 10 for")
 print(f"  the registration-time-only audit.\n")
 
 print("=" * 70)
-print(f"  CLASSIFICATION REPORT — {best_name}  (full features)")
+print(f"  CLASSIFICATION REPORT - {best_name}  (full features)")
 print("=" * 70)
 print(classification_report(y_test, best["y_pred"],
                               target_names=["Terminated/Withdrawn","Completed/Active"]))
@@ -391,10 +391,10 @@ print("  Saved → outputs/model_results.json")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 7. Figure 5 — Model comparison
+# 7. Figure 5 - Model comparison
 # ─────────────────────────────────────────────────────────────────────────────
 fig, axes = plt.subplots(1, 3, figsize=(20, 7))
-fig.suptitle("Model Comparison — All Models (full feature set)", fontsize=14, color="white")
+fig.suptitle("Model Comparison - All Models (full feature set)", fontsize=14, color="white")
 
 ax = axes[0]
 names = list(test_results.keys())
@@ -448,7 +448,7 @@ plt.close()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 8. Figure 6 — Best model deep-dive
+# 8. Figure 6 - Best model deep-dive
 # ─────────────────────────────────────────────────────────────────────────────
 interp_pipe = rf_gs.best_estimator_
 
@@ -529,7 +529,7 @@ if HAS_SHAP:
     print("  SHAP EXPLAINABILITY ANALYSIS")
     print("=" * 70)
 
-    # Use RF tuned — extract the fitted preprocessor + classifier
+    # Use RF tuned - extract the fitted preprocessor + classifier
     prep_fitted = interp_pipe.named_steps["prep"]
     clf_fitted   = interp_pipe.named_steps["clf"]
 
@@ -566,11 +566,11 @@ if HAS_SHAP:
     while len(all_features) < n_feat:
         all_features.append(f"feat_{len(all_features)}")
 
-    # Figure 7 — SHAP summary + waterfall
+    # Figure 7 - SHAP summary + waterfall
     fig, axes = plt.subplots(1, 2, figsize=(18, 9))
-    fig.suptitle("SHAP Explainability — Random Forest (Tuned, full features)", fontsize=14, color="white")
+    fig.suptitle("SHAP Explainability - Random Forest (Tuned, full features)", fontsize=14, color="white")
 
-    # SHAP beeswarm (summary plot) — manual implementation
+    # SHAP beeswarm (summary plot) - manual implementation
     ax = axes[0]
     mean_abs_shap = np.abs(sv).mean(axis=0).flatten()
     # Guard: clamp top_idx to actual sv feature dimension
@@ -604,7 +604,7 @@ if HAS_SHAP:
     ax.set_yticks(range(len(feat_top)))
     ax.set_yticklabels(feat_top, fontsize=8)
     ax.set_xlabel("SHAP Value (impact on model output)")
-    ax.set_title("SHAP Beeswarm — Feature Impact on Trial Success\n(color = feature value: green=high, red=low)")
+    ax.set_title("SHAP Beeswarm - Feature Impact on Trial Success\n(color = feature value: green=high, red=low)")
     ax.grid(True, axis="x", alpha=0.3)
 
     # Mean SHAP bar chart
@@ -632,7 +632,7 @@ if HAS_SHAP:
     print("  Saved → outputs/shap_summary.csv")
 
 else:
-    print("\n  SHAP skipped — install with: pip install shap")
+    print("\n  SHAP skipped - install with: pip install shap")
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -743,7 +743,7 @@ elif auc_drop > 0.03:
     print("    but registration-only features still hold useful signal.")
 else:
     print("  → Small AUC drop. Registration-time features alone carry most")
-    print("    of the predictive signal — leakage concern is limited here.")
+    print("    of the predictive signal - leakage concern is limited here.")
 print()
 
 # Save audit results as separate JSON for dashboard / docs
@@ -786,11 +786,11 @@ print()
 print("=" * 70)
 print(f"  ★  BEST MODEL (full features)      : {best_name}")
 print(f"     AUC-ROC                          : {best['auc']:.4f}")
-print(f"     ⚠  Includes conduct-time signal — see leakage audit")
+print(f"     ⚠  Includes conduct-time signal - see leakage audit")
 print()
 print(f"  ★  BEST MODEL (registration-only)  : {best_reg_name}")
 print(f"     AUC-ROC                          : {best_reg_auc:.4f}")
-print(f"     ✓  Honest prospective number — usable at trial start")
+print(f"     ✓  Honest prospective number - usable at trial start")
 print("=" * 70)
 print()
 print("  Output files:")

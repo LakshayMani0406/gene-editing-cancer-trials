@@ -1,5 +1,5 @@
 """
-molecules.py — 3D Protein Target Viewer
+molecules.py - 3D Protein Target Viewer
 Zero template literals. Safari-safe. Sidebar loads before Three.js.
 """
 import json, math, requests, time

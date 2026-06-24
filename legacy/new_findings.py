@@ -1,5 +1,5 @@
 """
-new_findings.py — 10 Novel Research Findings
+new_findings.py - 10 Novel Research Findings
 Each finding is a genuine, publishable-level insight from the trial dataset.
 
 FINDING 1: Treatment Desert Analysis
@@ -29,7 +29,7 @@ df  = pd.read_csv("data/crispr_trials_clean.csv")
 df_l = df[df["trial_outcome"].notna()].copy()
 
 print("=" * 65)
-print("NOVEL RESEARCH FINDINGS — Gene-Editing Cancer Trials")
+print("NOVEL RESEARCH FINDINGS - Gene-Editing Cancer Trials")
 print("=" * 65)
 print(f"\nDataset: {len(df):,} trials  |  {len(df_l):,} labeled\n")
 
@@ -74,7 +74,7 @@ for cancer, deaths in CANCER_MORTALITY.items():
     trials = trial_counts.get(cancer, 0)
     if deaths == 0:
         continue
-    # Trials per 10,000 annual deaths — the "investment ratio"
+    # Trials per 10,000 annual deaths - the "investment ratio"
     invest_ratio = round(trials / deaths * 10_000, 2)
     deserts.append({
         "cancer": cancer,
@@ -100,7 +100,7 @@ findings["treatment_desert"] = {
     "metric_label": "Trials per 10,000 annual US deaths",
     "most_underserved": [d["cancer"] for d in deserts[:3]],
     "best_resourced": [d["cancer"] for d in sorted(deserts, key=lambda x: x["investment_ratio"], reverse=True)[:3]],
-    "key_insight": f"{deserts[0]['cancer']} has {deserts[0]['investment_ratio']:.2f} trials per 10k deaths — {round(deserts[-1]['investment_ratio']/deserts[0]['investment_ratio'])}x fewer than {deserts[-1]['cancer']}",
+    "key_insight": f"{deserts[0]['cancer']} has {deserts[0]['investment_ratio']:.2f} trials per 10k deaths - {round(deserts[-1]['investment_ratio']/deserts[0]['investment_ratio'])}x fewer than {deserts[-1]['cancer']}",
 }
 
 
@@ -183,7 +183,7 @@ for i in range(len(bins)-1):
     if len(sub) >= 10:
         rate = round(float(sub["trial_outcome"].mean())*100, 1)
         bin_stats.append({
-            "bin_label": f"{lo}–{hi}",
+            "bin_label": f"{lo}-{hi}",
             "lo": lo, "hi": hi,
             "midpoint": (lo+hi)//2,
             "n": int(len(sub)),
@@ -229,7 +229,7 @@ findings["tipping_point"] = {
     "chi2": round(float(chi2), 2),
     "p_value": round(float(pval), 4),
     "significant": pval < 0.05,
-    "key_insight": f"Trials enrolling ≥{tipping_point} patients complete at {above_rate}% vs {below_rate}% for smaller trials — a {above_rate-below_rate:.1f}pp jump (p={pval:.4f})",
+    "key_insight": f"Trials enrolling ≥{tipping_point} patients complete at {above_rate}% vs {below_rate}% for smaller trials - a {above_rate-below_rate:.1f}pp jump (p={pval:.4f})",
 }
 
 
@@ -337,7 +337,7 @@ for _, row in df.iterrows():
             if re.search(pat, text, re.IGNORECASE):
                 country_therapy[country][therapy] += 1
 
-# Convert to percentages — what % of each country's trials are each therapy
+# Convert to percentages - what % of each country's trials are each therapy
 spec = {}
 for country in FOCUS_COUNTRIES:
     total = country_totals[country]
@@ -477,8 +477,8 @@ findings["phase_attrition"] = {
     "ii_to_iii_pct": ii_to_iii,
     "i_to_iii_pct": overall_funnel,
     "total_phase_i": p1,
-    "key_insight": f"Only {overall_funnel}% of Phase I trials ever reach Phase III — {100-overall_funnel:.0f}% are lost in the pipeline",
-    "plain_english": f"For every 100 early-stage cancer trials started, only {overall_funnel:.0f} make it all the way to large-scale testing. The rest are abandoned — too dangerous, too expensive, or simply didn't work well enough."
+    "key_insight": f"Only {overall_funnel}% of Phase I trials ever reach Phase III - {100-overall_funnel:.0f}% are lost in the pipeline",
+    "plain_english": f"For every 100 early-stage cancer trials started, only {overall_funnel:.0f} make it all the way to large-scale testing. The rest are abandoned - too dangerous, too expensive, or simply didn't work well enough."
 }
 
 # ═══════════════════════════════════════════════════════════════
@@ -528,7 +528,7 @@ findings["sponsor_gap"] = {
     "worst_sponsor": worst_sponsor,
     "gap_pp": gap,
     "key_insight": f"{best_sponsor} sponsors outperform {worst_sponsor} by {gap}pp in trial completion",
-    "plain_english": f"Trials funded by {best_sponsor} complete {gap}% more often than those funded by {worst_sponsor}. {'This gap is statistically real.' if sig else 'However, this gap is not statistically significant — the difference may be due to chance.'}"
+    "plain_english": f"Trials funded by {best_sponsor} complete {gap}% more often than those funded by {worst_sponsor}. {'This gap is statistically real.' if sig else 'However, this gap is not statistically significant - the difference may be due to chance.'}"
 }
 
 # ═══════════════════════════════════════════════════════════════
@@ -589,8 +589,8 @@ findings["cart_maturation"] = {
     "phase_iii_2020_plus": phase_III_2020,
     "delta_pp": phase_III_delta,
     "direction": maturation_direction,
-    "key_insight": f"Phase III trial share {'increased' if phase_III_delta > 0 else 'decreased'} by {abs(phase_III_delta)}pp from 2015-2019 to 2020+ — the field is {maturation_direction.lower()}",
-    "plain_english": f"In 2015-2019, {phase_III_2015}% of trials were large-scale Phase III studies. By 2020+, that number {'rose' if phase_III_delta > 0 else 'fell'} to {phase_III_2020}%. {'This means the field is graduating from early safety studies toward definitive proof-of-efficacy trials.' if phase_III_delta > 0 else 'More early-phase trials are being started than late-phase ones finishing — the field is still in the exploratory stage.'}"
+    "key_insight": f"Phase III trial share {'increased' if phase_III_delta > 0 else 'decreased'} by {abs(phase_III_delta)}pp from 2015-2019 to 2020+ - the field is {maturation_direction.lower()}",
+    "plain_english": f"In 2015-2019, {phase_III_2015}% of trials were large-scale Phase III studies. By 2020+, that number {'rose' if phase_III_delta > 0 else 'fell'} to {phase_III_2020}%. {'This means the field is graduating from early safety studies toward definitive proof-of-efficacy trials.' if phase_III_delta > 0 else 'More early-phase trials are being started than late-phase ones finishing - the field is still in the exploratory stage.'}"
 }
 
 # ═══════════════════════════════════════════════════════════════
@@ -712,8 +712,8 @@ findings["projection_2030"] = {
     "proj_2030": int(total_2030),
     "growth_pct_2024_to_2030": float(growth_pct),
     "top_growing_cancers": top_cancers,
-    "key_insight": f"At current growth (+{annual_growth}/year), gene-editing trial volume will reach {total_2030:,}/year by 2030 — a {growth_pct}% increase from 2024",
-    "plain_english": f"Based on trends from 2013–2024, scientists will be running about {total_2030:,} new gene-editing cancer trials per year by 2030. That's {growth_pct}% more than today. The fastest-growing cancer areas are {', '.join(list(top_cancers.keys())[:3])} — meaning these will dominate the research landscape this decade."
+    "key_insight": f"At current growth (+{annual_growth}/year), gene-editing trial volume will reach {total_2030:,}/year by 2030 - a {growth_pct}% increase from 2024",
+    "plain_english": f"Based on trends from 2013-2024, scientists will be running about {total_2030:,} new gene-editing cancer trials per year by 2030. That's {growth_pct}% more than today. The fastest-growing cancer areas are {', '.join(list(top_cancers.keys())[:3])} - meaning these will dominate the research landscape this decade."
 }
 
 # ── Save ──────────────────────────────────────────────────────
@@ -735,10 +735,10 @@ print(f"\n  FINDING 1: Most underserved cancer: {findings['treatment_desert']['m
 print(f"  FINDING 2: Blood vs solid gap is {findings['convergence']['trend_direction']} ({findings['convergence']['trend_slope']:+.3f} pp/yr)")
 print(f"  FINDING 3: Enrollment tipping point = {findings['tipping_point']['tipping_point_enrollment']} patients (p={findings['tipping_point']['p_value']})")
 print(f"  FINDING 4: Dual-target trials: {findings['dual_target']['early_pct']:.1f}% → {findings['dual_target']['late_pct']:.1f}% over the study period")
-print(f"  FINDING 5: Country specialization confirmed — see findings.json for full breakdown")
-print(f"  FINDING 6: Phase attrition — only {findings['phase_attrition']['i_to_iii_pct']}% of Phase I trials reach Phase III")
+print(f"  FINDING 5: Country specialization confirmed - see findings.json for full breakdown")
+print(f"  FINDING 6: Phase attrition - only {findings['phase_attrition']['i_to_iii_pct']}% of Phase I trials reach Phase III")
 print(f"  FINDING 7: {findings['sponsor_gap']['best_sponsor']} outperforms {findings['sponsor_gap']['worst_sponsor']} by {findings['sponsor_gap']['gap_pp']}pp")
-print(f"  FINDING 8: Field is {findings['cart_maturation']['direction']} — Phase III share {'+' if findings['cart_maturation']['delta_pp']>0 else ''}{findings['cart_maturation']['delta_pp']}pp")
+print(f"  FINDING 8: Field is {findings['cart_maturation']['direction']} - Phase III share {'+' if findings['cart_maturation']['delta_pp']>0 else ''}{findings['cart_maturation']['delta_pp']}pp")
 print(f"  FINDING 9: Best therapy survival: {findings['therapy_survival']['best_therapy']}")
 print(f"  FINDING 10: Projected 2030 trial volume: {findings['projection_2030']['proj_2030']:,}/year ({findings['projection_2030']['growth_pct_2024_to_2030']:+.1f}% vs 2024)")
 print(f"\n  Next: python3 dashboard.py  (then open outputs/dashboard.html)")
