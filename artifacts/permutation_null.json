@@ -1,0 +1,25 @@
+{
+  "phase": 2,
+  "note": "permutation null, raw output, no conclusions",
+  "config": "strict label, registration-only features, temporal split, RandomForest seed 42",
+  "n_permutations": 1000,
+  "seed": 42,
+  "temporal_cut_year": 2021,
+  "n_train": 1393,
+  "n_test": 411,
+  "test_base_rate": 0.3771,
+  "observed_auc": 0.6047,
+  "null_mean": 0.4951,
+  "null_std": 0.0542,
+  "null_min": 0.3359,
+  "null_max": 0.657,
+  "null_ci95": [
+    0.3902,
+    0.598
+  ],
+  "n_null_ge_observed": 16,
+  "empirical_p_one_sided": 0.01698,
+  "p_formula": "(count(null >= observed) + 1) / (n_permutations + 1)",
+  "observed_inside_null_95": false,
+  "elapsed_seconds": 552.6
+}
