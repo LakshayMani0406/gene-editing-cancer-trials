@@ -1,5 +1,6 @@
-# Extra dependencies for the archived exploratory scripts in legacy/ only.
-# Not required for the canonical pipeline (src/run.py) or the SQL layer.
+# Extra dependencies for the archived legacy/ scripts and the research scripts in src/
+# (survival analysis and the text study). Not required for the canonical pipeline
+# (src/run.py) or the SQL layer.
 -r requirements.txt
 matplotlib
 seaborn
@@ -10,3 +11,6 @@ xgboost
 lightgbm
 shap
 torch
+lifelines
+sentence-transformers
+transformers

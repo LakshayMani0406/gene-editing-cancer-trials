@@ -1,0 +1,30 @@
+{
+  "phase": "T1 definitive registration-time test (first-posted text)",
+  "first_posted_coverage": {
+    "n_valid": 1803,
+    "n_errors": 0,
+    "of_cohort": 1804
+  },
+  "text_drift_current_vs_firstposted": {
+    "n_compared": 1803,
+    "pct_eligibility_text_changed": 100.0,
+    "pct_summary_text_changed": 85.9,
+    "median_elig_wordcount_abs_change": 73,
+    "median_elig_wordcount_rel_change_pct": 17.0,
+    "pct_elig_wordcount_changed_gt10pct": 78.9
+  },
+  "auc_on_firstposted_features": {
+    "structured_only": 0.6047,
+    "text_only_interpretable": 0.5955,
+    "combined_interpretable": 0.6314,
+    "delta_combined_minus_structured": 0.0267
+  },
+  "reference_current_text": {
+    "structured_only": 0.6047,
+    "combined_interpretable": 0.6562,
+    "delta_combined_minus_structured": 0.0515
+  },
+  "crosses_practical_0.65": {
+    "combined_firstposted": false
+  }
+}

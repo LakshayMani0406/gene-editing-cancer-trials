@@ -1,0 +1,42 @@
+{
+  "phase": "T1 leakage check",
+  "note": "is the combined gain registration-time or update-edit leakage",
+  "gap_correlates_with_outcome": {
+    "pointbiserial_r": 0.2676,
+    "median_gap_completed": 2201,
+    "median_gap_failed": 1488
+  },
+  "auc": {
+    "structured_only": 0.6047,
+    "combined_structured_plus_text": 0.6562,
+    "gap_only": 0.5674,
+    "structured_plus_gap": 0.6375,
+    "structured_plus_text_plus_gap": 0.6647
+  },
+  "median_gap_days": 1896,
+  "gap_subsets": {
+    "low_gap_below_median": {
+      "n": 900,
+      "structured": 0.6092,
+      "combined": 0.6647,
+      "combined_minus_structured": 0.0555
+    },
+    "high_gap_at_or_above_median": {
+      "n": 904,
+      "structured": 0.5222,
+      "combined": 0.4905,
+      "combined_minus_structured": -0.0317
+    }
+  },
+  "text_feature_gap_correlation": {
+    "elig_word_count": 0.019,
+    "summary_word_count": 0.113,
+    "desc_word_count": 0.22,
+    "n_inclusion": 0.2,
+    "n_exclusion": -0.098,
+    "fk_grade_elig": 0.15,
+    "fk_grade_summary": -0.115,
+    "n_numeric_constraints": -0.001,
+    "n_biomarker_terms": -0.044
+  }
+}

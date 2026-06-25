@@ -1,0 +1,27 @@
+{
+  "phase": "T2 eval on first-posted text (embeddings + interpretable)",
+  "embedding_model": "all-MiniLM-L6-v2",
+  "embedding_dim": 384,
+  "pca_components": 50,
+  "pca_explained_variance": 0.694,
+  "cohort_n": 1804,
+  "n_train": 1393,
+  "n_test": 411,
+  "cut_year": 2021,
+  "auc": {
+    "structured_only": 0.6047,
+    "interpretable_only": 0.5955,
+    "embeddings_only": 0.5918,
+    "text_only_interp_plus_emb": 0.5971,
+    "combined_structured_plus_text": 0.6283
+  },
+  "practical_line": 0.65,
+  "delta_combined_minus_structured": 0.0236,
+  "crosses_practical": {
+    "structured_only": false,
+    "interpretable_only": false,
+    "embeddings_only": false,
+    "text_only_interp_plus_emb": false,
+    "combined_structured_plus_text": false
+  }
+}

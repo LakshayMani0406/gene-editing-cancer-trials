@@ -30,6 +30,15 @@ except: surv = {}
 try:
     with open(ROOT / "artifacts" / "permutation_null.json") as f: perm = json.load(f)
 except: perm = {}
+try:
+    with open(ROOT / "artifacts" / "text_t2_eval.json") as f: text_t2 = json.load(f)
+except: text_t2 = {}
+try:
+    with open(ROOT / "artifacts" / "text_firstposted_eval.json") as f: text_fp = json.load(f)
+except: text_fp = {}
+try:
+    with open(ROOT / "artifacts" / "text_t2_permutation.json") as f: text_pm = json.load(f)
+except: text_pm = {}
 
 df_l = df[df["trial_outcome"].notna()].copy()
 
@@ -1703,6 +1712,40 @@ def _study_html():
     lo, hi = perm["null_ci95"]; pval = perm["empirical_p_one_sided"]
     nge, nperm = perm["n_null_ge_observed"], perm["n_permutations"]
     inprog = res.get("callouts", {}).get("inprogress_share_of_positives", 0) * 100
+    # Study 2 text-signal subsection, sourced from the text_*.json artifacts (no hardcoded numbers).
+    if text_t2 and text_fp and text_pm:
+        cur = text_fp["reference_current_text"]["combined_interpretable"]
+        fpc = text_fp["auc_on_firstposted_features"]["combined_interpretable"]
+        embc = text_t2["auc"]["combined_structured_plus_text"]; st2 = text_t2["auc"]["structured_only"]
+        d2 = text_t2["delta_combined_minus_structured"]
+        drift = text_fp["text_drift_current_vs_firstposted"]["pct_eligibility_text_changed"]
+        relch = text_fp["text_drift_current_vs_firstposted"]["median_elig_wordcount_rel_change_pct"]
+        to_obs = text_pm["text_only_interp_plus_emb"]["observed_auc"]
+        to_p = text_pm["text_only_interp_plus_emb"]["empirical_p_one_sided"]
+        emb_only = text_t2["auc"]["embeddings_only"]; interp_only = text_t2["auc"]["interpretable_only"]
+        text_block = f"""
+  <h3 style="margin-top:26px">Study 2: does the registration text add anything?</h3>
+  <div class="insight" style="margin-bottom:12px"><div class="insight-icon">📝</div><div class="insight-text"><p>Same honest frame on the eligibility and brief-summary text. The short answer is no, and there is a leakage trap: the current ClinicalTrials.gov text is not the text as it was at registration.</p></div></div>
+  <div class="grid3" style="margin-bottom:15px">
+    <div class="card"><h3>Text leakage arc</h3>
+      <div style="display:flex;gap:8px;align-items:center;font-family:monospace;font-size:1.2rem;font-weight:700">
+        <span style="color:#ef4444">{cur:.3f}</span><span style="color:#7a9bbf">&rarr;</span><span style="color:#f59e0b">{fpc:.3f}</span><span style="color:#7a9bbf">&rarr;</span><span style="color:#22c55e">{embc:.3f}</span></div>
+      <p style="font-size:.78rem;color:#8ab4d4;margin-top:8px">Combined AUC: current text {cur:.3f} (crossed 0.65), first-posted text {fpc:.3f}, first-posted plus embeddings {embc:.3f}. About half the apparent gain was post-registration editing.</p></div>
+    <div class="card"><h3>Why: the text drifts</h3>
+      <div style="font-family:monospace;font-size:1.5rem;font-weight:700;color:#ef4444">{drift:.0f}%</div>
+      <p style="font-size:.78rem;color:#8ab4d4;margin-top:8px">of eligibility texts changed since registration (median {relch:.0f}% word-count change), so the current text leaks. I use the first-posted version instead.</p></div>
+    <div class="card"><h3>Embeddings add nothing</h3>
+      <div style="font-family:monospace;font-size:1.15rem;font-weight:700;color:#f59e0b">{emb_only:.3f} vs {interp_only:.3f}</div>
+      <p style="font-size:.78rem;color:#8ab4d4;margin-top:8px">Sentence embeddings ({emb_only:.3f}) tie the simple word-count and readability features ({interp_only:.3f}). Text-only is {to_obs:.3f}, distinguishable from chance (p = {to_p:.3f}) but useless.</p></div>
+  </div>
+  <div class="card" style="border-left:3px solid #22c55e">
+    <h3>Verdict: language does not move the needle</h3>
+    <p style="font-size:.82rem;color:#c8dff5">On registration-time text the combined model adds only +{d2:.3f} AUC over structured ({st2:.3f}), below the 0.03 margin I pre-registered and short of 0.65. Study 2 confirms Study 1: completion is near-unpredictable from registration data, text or structured. The one caution is methodological, do not use current ClinicalTrials.gov text as a registration-time feature.</p>
+  </div>
+  <p class="muted" style="margin-top:10px;font-size:.76rem">Study 2 pre-registered in docs/PREREGISTRATION_TEXT.md, write-up in docs/FINDINGS_TEXT.md. Numbers read from artifacts/text_t2_eval.json, text_firstposted_eval.json, and text_t2_permutation.json.</p>
+"""
+    else:
+        text_block = ""
     return f"""
   <div class="insight"><div class="insight-icon">🔬</div><div class="insight-text"><h4>Is trial completion predictable from registration data?</h4>
   <p>I tested this three independent ways and they agree: barely. The honest models score about AUC {A2}, just above a coin flip and far below anything usable. The signal is statistically real but practically worthless, and that negative result, pre-registered and proven three ways, is the contribution.</p></div></div>
@@ -1729,6 +1772,7 @@ def _study_html():
       <p style="font-size:.82rem;color:#c8dff5">Industry-sponsored trials complete at a higher rate, hazard ratio {f3(ind,'hr')} (95% CI [{f3(ind,'ci_low')}, {f3(ind,'ci_high')}]), in the predicted direction and stable under the PH check. This is the single reliable signal in the study.</p></div>
   </div>
   <p class="muted" style="margin-top:14px;font-size:.76rem">Pre-registered before results in docs/PREREGISTRATION.md, full write-up with citations in docs/FINDINGS.md. Every number on this tab is read at build time from artifacts/results.json, survival.json, and permutation_null.json.</p>
+{text_block}
 """
 
 study_html = _study_html()

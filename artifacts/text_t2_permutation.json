@@ -1,0 +1,28 @@
+{
+  "phase": "T2 permutation nulls on first-posted text",
+  "n_permutations": 1000,
+  "n_train": 1393,
+  "n_test": 411,
+  "text_only_interp_plus_emb": {
+    "observed_auc": 0.5971,
+    "null_mean": 0.4917,
+    "null_ci95": [
+      0.423,
+      0.5712
+    ],
+    "n_null_ge_observed": 4,
+    "empirical_p_one_sided": 0.005,
+    "observed_inside_null_95": false
+  },
+  "combined_structured_plus_text": {
+    "observed_auc": 0.6283,
+    "null_mean": 0.4896,
+    "null_ci95": [
+      0.4209,
+      0.5641
+    ],
+    "n_null_ge_observed": 1,
+    "empirical_p_one_sided": 0.002,
+    "observed_inside_null_95": false
+  }
+}

@@ -762,6 +762,27 @@ body.beginner-mode .bm-label-beg{display:inline!important}
   </div>
   <p class="muted" style="margin-top:14px;font-size:.76rem">Pre-registered before results in docs/PREREGISTRATION.md, full write-up with citations in docs/FINDINGS.md. Every number on this tab is read at build time from artifacts/results.json, survival.json, and permutation_null.json.</p>
 
+  <h3 style="margin-top:26px">Study 2: does the registration text add anything?</h3>
+  <div class="insight" style="margin-bottom:12px"><div class="insight-icon">📝</div><div class="insight-text"><p>Same honest frame on the eligibility and brief-summary text. The short answer is no, and there is a leakage trap: the current ClinicalTrials.gov text is not the text as it was at registration.</p></div></div>
+  <div class="grid3" style="margin-bottom:15px">
+    <div class="card"><h3>Text leakage arc</h3>
+      <div style="display:flex;gap:8px;align-items:center;font-family:monospace;font-size:1.2rem;font-weight:700">
+        <span style="color:#ef4444">0.656</span><span style="color:#7a9bbf">&rarr;</span><span style="color:#f59e0b">0.631</span><span style="color:#7a9bbf">&rarr;</span><span style="color:#22c55e">0.628</span></div>
+      <p style="font-size:.78rem;color:#8ab4d4;margin-top:8px">Combined AUC: current text 0.656 (crossed 0.65), first-posted text 0.631, first-posted plus embeddings 0.628. About half the apparent gain was post-registration editing.</p></div>
+    <div class="card"><h3>Why: the text drifts</h3>
+      <div style="font-family:monospace;font-size:1.5rem;font-weight:700;color:#ef4444">100%</div>
+      <p style="font-size:.78rem;color:#8ab4d4;margin-top:8px">of eligibility texts changed since registration (median 17% word-count change), so the current text leaks. I use the first-posted version instead.</p></div>
+    <div class="card"><h3>Embeddings add nothing</h3>
+      <div style="font-family:monospace;font-size:1.15rem;font-weight:700;color:#f59e0b">0.592 vs 0.596</div>
+      <p style="font-size:.78rem;color:#8ab4d4;margin-top:8px">Sentence embeddings (0.592) tie the simple word-count and readability features (0.596). Text-only is 0.597, distinguishable from chance (p = 0.005) but useless.</p></div>
+  </div>
+  <div class="card" style="border-left:3px solid #22c55e">
+    <h3>Verdict: language does not move the needle</h3>
+    <p style="font-size:.82rem;color:#c8dff5">On registration-time text the combined model adds only +0.024 AUC over structured (0.605), below the 0.03 margin I pre-registered and short of 0.65. Study 2 confirms Study 1: completion is near-unpredictable from registration data, text or structured. The one caution is methodological, do not use current ClinicalTrials.gov text as a registration-time feature.</p>
+  </div>
+  <p class="muted" style="margin-top:10px;font-size:.76rem">Study 2 pre-registered in docs/PREREGISTRATION_TEXT.md, write-up in docs/FINDINGS_TEXT.md. Numbers read from artifacts/text_t2_eval.json, text_firstposted_eval.json, and text_t2_permutation.json.</p>
+
+
 </div>
 
 <!-- PUBS -->

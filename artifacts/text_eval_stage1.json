@@ -1,0 +1,84 @@
+{
+  "phase": "T1-stage1",
+  "note": "interpretable text features only, no embeddings, raw output",
+  "cohort": {
+    "n": 1804,
+    "n_train": 1393,
+    "n_test": 411,
+    "cut_year": 2021,
+    "test_base_rate": 0.3771
+  },
+  "text_coverage": {
+    "eligibility": 1.0,
+    "brief_summary": 1.0,
+    "detailed_description": 0.7561
+  },
+  "fidelity_gap_days": {
+    "n": 1804,
+    "median": 1896,
+    "p75": 2861,
+    "pct_gt_365": 95.5,
+    "pct_gt_1825": 52.7,
+    "note": "days between first-posted and last-updated; large gap means current text may differ from registration-time"
+  },
+  "auc": {
+    "structured_only": 0.6047,
+    "text_only_interpretable": 0.5943,
+    "combined_interpretable": 0.6562
+  },
+  "delta_combined_minus_structured": 0.0515,
+  "permutation_text_only": {
+    "observed": 0.5943,
+    "null_mean": 0.5005,
+    "null_ci95": [
+      0.4172,
+      0.5782
+    ],
+    "n_null_ge_observed": 11,
+    "empirical_p_one_sided": 0.01199,
+    "observed_inside_null_95": false
+  },
+  "text_only_feature_importance": [
+    {
+      "feature": "elig_word_count",
+      "importance": 0.1703
+    },
+    {
+      "feature": "fk_grade_summary",
+      "importance": 0.1427
+    },
+    {
+      "feature": "fk_grade_elig",
+      "importance": 0.1221
+    },
+    {
+      "feature": "summary_word_count",
+      "importance": 0.121
+    },
+    {
+      "feature": "desc_word_count",
+      "importance": 0.1156
+    },
+    {
+      "feature": "n_exclusion",
+      "importance": 0.1074
+    },
+    {
+      "feature": "n_inclusion",
+      "importance": 0.0875
+    },
+    {
+      "feature": "n_numeric_constraints",
+      "importance": 0.0757
+    },
+    {
+      "feature": "n_biomarker_terms",
+      "importance": 0.0577
+    }
+  ],
+  "practical_line": 0.65,
+  "crosses_practical": {
+    "text_only": false,
+    "combined": true
+  }
+}
