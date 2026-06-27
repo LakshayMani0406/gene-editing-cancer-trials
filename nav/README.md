@@ -20,6 +20,7 @@ GitHub Pages) and the local Flask matcher alike. No build step.
 | Data & Tools  | `outputs/dashboard.html`                       | `data`       |
 | For Patients  | `http://127.0.0.1:5050` (matcher, local only) | `patients`   |
 | About         | landing page                                  | `about`      |
+| Molecules     | `outputs/molecules.html` (3D viewer)           | `molecules`  |
 
 Static-page links use absolute GitHub Pages URLs so they work publicly. The
 matcher link is `http://127.0.0.1:5050` and carries a `Local` tag, since it runs
@@ -36,7 +37,7 @@ Static pages (run from repo root):
     python3 nav/inject_nav.py findings web/index.html
     python3 nav/inject_nav.py about    index.html
     python3 nav/inject_nav.py data     outputs/dashboard.html
-    python3 nav/inject_nav.py ""       outputs/molecules.html
+    python3 nav/inject_nav.py molecules outputs/molecules.html
 
 The Flask matcher lives in the separate `~/trial-matcher` repo. Its inline
 template gets the same partial, and its sticky safety banner is offset to
