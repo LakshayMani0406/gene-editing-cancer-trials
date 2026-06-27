@@ -2,12 +2,150 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Clinical-trial completion: a three-layer leakage audit</title>
-<meta http-equiv="refresh" content="0; url=./web/">
-<link rel="canonical" href="./web/">
-<meta name="description" content="A trial-completion model that scored 0.90 falls to near chance once three layers of leakage are removed.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gene-editing cancer trials: a leakage-first analysis</title>
+<meta name="description" content="Observational analysis of ~4,460 oncology gene-editing trials from ClinicalTrials.gov. A completion model that scored AUC 0.90 falls to near chance once three layers of leakage are removed. Explainer, dashboard, a local trial matcher, and a 3D molecule viewer.">
+<link rel="canonical" href="https://lakshaymani0406.github.io/gene-editing-cancer-trials/">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#13202b; --muted:#5b6b78; --line:#e3e8ee;
+    --card:#f7f9fb; --accent:#0e7c7b; --accent2:#2563eb; --warn:#c2410c; --good:#15803d;
+    --maxw:1000px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+  header{padding:54px 0 30px;border-bottom:1px solid var(--line)}
+  .kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:34px;line-height:1.2;margin:.4em 0 .3em;letter-spacing:-.01em}
+  p{margin:.7em 0}
+  .lede{font-size:19px}
+  .muted{color:var(--muted)}
+  a{color:var(--accent2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .arc{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 4px}
+  .arc .num{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .arc .num .v{font-size:28px;font-weight:700;letter-spacing:-.02em}
+  .arc .num .l{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .arc .num.s1 .v{color:var(--warn)} .arc .num.s2 .v{color:#b45309} .arc .num.s3 .v{color:var(--good)}
+
+  h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:34px 0 4px;font-weight:700}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0 8px}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}}
+  .tile{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+    color:inherit;transition:border-color .15s,box-shadow .15s,transform .15s}
+  .tile:hover{text-decoration:none;border-color:#cbd5e1;box-shadow:0 6px 22px rgba(13,32,46,.07);transform:translateY(-2px)}
+  .tile .t{font-size:18px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+  .tile .d{font-size:14.5px;color:var(--muted);margin-top:7px}
+  .tile .go{font-size:13px;color:var(--accent2);font-weight:600;margin-top:12px;display:inline-block}
+  .pill{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--good);
+    border:1px solid #bbf7d0;background:#f0fdf4;border-radius:5px;padding:1px 6px}
+  .localnote{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d;border-radius:10px;padding:12px 14px;font-size:14px;margin-top:14px}
+  .localnote code{background:#fff;border:1px solid #d6efdc;border-radius:6px;padding:1px 6px;font-size:13px}
+  footer{border-top:1px solid var(--line);margin-top:38px;padding:24px 0 60px;color:var(--muted);font-size:14px}
+</style>
 </head>
-<body>
-<p>Redirecting to the <a href="./web/">interactive explainer</a>.</p>
+<body data-nav="about">
+<!-- shared-project-nav:start (biotech flat nav; identical on every page; active section via data-nav on <body>, URL fallback) -->
+<a class="pn-skip" href="#pn-main">Skip to content</a>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style id="proj-nav-style">
+#proj-nav{--pn-ink:#14181A;--pn-paper:#F4F2EC;--pn-line:rgba(20,24,26,.14);--pn-muted:#5A6360;--pn-signal:#0E6E64;
+  position:sticky;top:0;z-index:99999;display:flex;align-items:center;gap:6px;min-height:60px;
+  padding:0 24px;overflow-x:auto;background:var(--pn-paper);border-bottom:1px solid var(--pn-line);box-sizing:border-box;
+  -webkit-font-smoothing:antialiased;}
+#proj-nav::-webkit-scrollbar{height:0}
+#proj-nav *{box-sizing:border-box}
+#proj-nav .pn-brand{flex:0 0 auto;margin-right:auto;text-decoration:none;color:var(--pn-ink);
+  font-family:"Fraunces",Georgia,"Times New Roman",serif;font-weight:600;font-size:19px;letter-spacing:-.01em;line-height:1;white-space:nowrap;padding-right:18px;}
+#proj-nav .pn-links{flex:0 0 auto;display:flex;align-items:center;gap:2px;}
+#proj-nav a.pn-link{position:relative;flex:0 0 auto;text-decoration:none;color:var(--pn-muted);
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:500;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  padding:10px 14px;line-height:1;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;
+  border-radius:2px;transition:color .14s ease;}
+#proj-nav a.pn-link:hover{color:var(--pn-ink);}
+#proj-nav a.pn-link.is-current{color:var(--pn-ink);}
+#proj-nav a.pn-link.is-current::after{content:"";position:absolute;left:14px;right:14px;bottom:6px;height:2px;background:var(--pn-signal);}
+#proj-nav .pn-tag{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:600;font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--pn-muted);border:1px solid var(--pn-line);border-radius:2px;padding:2px 5px;line-height:1;}
+#proj-nav a.pn-link:focus-visible,#proj-nav .pn-brand:focus-visible{outline:2px solid var(--pn-signal);outline-offset:3px;border-radius:2px;}
+.pn-skip{position:absolute;left:-9999px;top:0;z-index:100000;background:#14181A;color:#F4F2EC;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.04em;padding:11px 16px;text-decoration:none;}
+.pn-skip:focus{left:8px;top:8px;}
+@media(max-width:760px){#proj-nav{padding:0 14px}#proj-nav .pn-brand{font-size:16px;padding-right:10px}
+  #proj-nav a.pn-link{padding:10px 9px;font-size:11px;letter-spacing:.05em}}
+@media(prefers-reduced-motion:reduce){#proj-nav a.pn-link{transition:none}}
+</style>
+<nav id="proj-nav" aria-label="Primary">
+<a class="pn-brand" href="https://lakshaymani0406.github.io/gene-editing-cancer-trials/">Gene-Editing Cancer Trials</a>
+<span class="pn-links">
+<a class="pn-link" data-nav="findings" href="https://lakshaymani0406.github.io/gene-editing-cancer-trials/web/">Findings</a>
+<a class="pn-link" data-nav="data" href="https://lakshaymani0406.github.io/gene-editing-cancer-trials/outputs/dashboard.html">Data &amp; Tools</a>
+<a class="pn-link" data-nav="patients" href="http://127.0.0.1:5050" title="Runs locally at http://127.0.0.1:5050">For Patients<span class="pn-tag">Local</span></a>
+<a class="pn-link" data-nav="about" href="https://lakshaymani0406.github.io/gene-editing-cancer-trials/">About</a>
+</span>
+</nav>
+<script id="proj-nav-js">
+(function(){var b=document.body,key=b&&b.getAttribute('data-nav');
+function n(u){try{var x=new URL(u,location.href);return(x.host+x.pathname).replace(/index\.html$/,'').replace(/\/+$/,'').toLowerCase();}catch(e){return'';}}
+var here=n(location.href),ls=document.querySelectorAll('#proj-nav a.pn-link'),i,l;
+for(i=0;i<ls.length;i++){l=ls[i];if((key&&l.getAttribute('data-nav')===key)||(!key&&n(l.href)===here)){l.classList.add('is-current');l.setAttribute('aria-current','page');}}})();
+</script>
+<!-- shared-project-nav:end -->
+<span id="pn-main" tabindex="-1"></span>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">Clinical-trial analytics &middot; ClinicalTrials.gov</div>
+    <h1>A trial-success model that looked 90% right. Then I removed the cheating.</h1>
+    <p class="lede">An observational analysis of ~4,460 oncology gene-editing and cell-therapy trials.
+      I trained a model to predict whether a registered trial would complete. The first version scored
+      AUC <b>0.90</b>. I did not trust it, so I took it apart, one layer of leakage at a time, until what
+      was left was the honest answer: prospective completion is close to a coin flip.</p>
+    <div class="arc">
+      <div class="num s1"><div class="v">0.90</div><div class="l">Leaked: full features, including conduct-time signals</div></div>
+      <div class="num s2"><div class="v">0.72</div><div class="l">Naive-clean: registration-only, but the label still cheats</div></div>
+      <div class="num s3"><div class="v">0.60</div><div class="l">Strict + temporal: the honest, prospective answer</div></div>
+    </div>
+    <p class="muted">Same random forest at every step. Only the features, the label, and the train/test split change.</p>
+  </header>
+
+  <h2>Explore the project</h2>
+  <div class="grid">
+    <a class="tile" href="https://lakshaymani0406.github.io/gene-editing-cancer-trials/web/">
+      <div class="t">Leakage explainer</div>
+      <div class="d">Interactive walkthrough of the three-layer audit. Peel back each form of leakage and watch the ROC curve fall toward the diagonal.</div>
+      <span class="go">Open the explainer &rarr;</span>
+    </a>
+    <a class="tile" href="https://lakshaymani0406.github.io/gene-editing-cancer-trials/outputs/dashboard.html">
+      <div class="t">Analytics dashboard</div>
+      <div class="d">The full landscape: trial counts, sponsors, phases, survival curves, and the two pre-registered studies (metadata and text signal).</div>
+      <span class="go">Open the dashboard &rarr;</span>
+    </a>
+    <a class="tile" href="http://127.0.0.1:5050">
+      <div class="t">Trial matcher <span class="pill">local</span></div>
+      <div class="d">A Flask app that searches live ClinicalTrials.gov and reads eligibility criteria with a local model. Informational only, it never decides eligibility.</div>
+      <span class="go">Open at 127.0.0.1:5050 &rarr;</span>
+    </a>
+    <a class="tile" href="https://lakshaymani0406.github.io/gene-editing-cancer-trials/outputs/molecules.html">
+      <div class="t">3D molecule viewer</div>
+      <div class="d">Protein targets behind the trials, rendered in 3D for side-by-side comparison. A legacy exploratory piece kept for context.</div>
+      <span class="go">Open the viewer &rarr;</span>
+    </a>
+  </div>
+  <div class="localnote">The trial matcher runs on your machine, not on GitHub Pages. Start it with
+    <code>cd ~/trial-matcher &amp;&amp; python app.py</code>, then the <b>Trial matcher</b> link opens
+    <code>http://127.0.0.1:5050</code>. The other three pages are live on GitHub Pages.</div>
+
+  <footer>
+    Data: ClinicalTrials.gov. Models: Python, scikit-learn (random forest, seed 42), lifelines.
+    Source and methodology on <a href="https://github.com/LakshayMani0406/gene-editing-cancer-trials">GitHub</a>.
+    Built by Lakshay Mani, MS Analytics, Northeastern University.
+  </footer>
+</div>
 </body>
 </html>
